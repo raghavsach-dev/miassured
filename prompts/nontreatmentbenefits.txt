@@ -1,0 +1,136 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the NON-TREATMENT BENEFITS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following non-treatment benefits:
+
+   a) DAILY HOSPITALIZATION CASH
+      - Document the exact daily cash amount provided
+      - Identify the maximum number of days covered per hospitalization
+      - Detail any annual limits on the number of days covered
+      - Note if different amounts apply to different hospitalization types (normal/ICU)
+      - List any waiting periods before this benefit becomes available
+      - Document any exclusions specific to this benefit
+      - Identify if this is a default benefit or requires additional premium
+      - Detail any conditions that must be satisfied to claim this benefit
+      - Note any documentation requirements specific to this benefit
+
+   b) SHARED ACCOMMODATION BENEFIT
+      - Document the exact benefit amount or percentage provided
+      - Identify when this benefit is triggered (e.g., when opting for shared room)
+      - Detail how this benefit is calculated and provided (cash/discount)
+      - Note any limits on the number of times this benefit can be availed
+      - List any exclusions specific to this benefit
+      - Document if this is available across all hospital types or only in network hospitals
+      - Identify if this is a default benefit or requires additional premium
+      - Detail any conditions that must be satisfied to claim this benefit
+
+   c) OPD TREATMENT
+      - Document the exact coverage amount for OPD treatment
+      - Identify what types of OPD services are covered (consultations/diagnostics/medicines)
+      - Detail any sub-limits for different types of OPD services
+      - Note any annual limits on OPD coverage
+      - List any exclusions specific to OPD coverage
+      - Document if OPD is available at all facilities or only at network providers
+      - Identify if this is a default benefit or requires additional premium
+      - Detail any conditions that must be satisfied to claim OPD benefits
+      - Note any specific documentation requirements for OPD claims
+
+   d) ANNUAL HEALTH CHECK-UP
+      - Document the exact coverage provided for health check-ups
+      - Identify what tests/panels are included in the annual check-up
+      - Detail if different check-up packages are available for different demographics
+      - Note any waiting periods before this benefit becomes available
+      - List any conditions for availing this benefit (e.g., no claims in policy year)
+      - Document if check-ups are available at all facilities or only at network providers
+      - Identify if this is a default benefit or requires additional premium
+      - Detail how many members can avail this benefit in a family floater policy
+      - Note any frequency limitations (once per policy year/term)
+
+   e) CONSULT WITH A DOCTOR
+      - Document the types of doctor consultations covered (general/specialist)
+      - Identify the modes of consultation available (physical/tele/video)
+      - Detail any limits on the number of consultations per year
+      - Note any specialty-specific consultation limits
+      - List any exclusions specific to this consultation benefit
+      - Document if consultations are available with any doctor or only with network doctors
+      - Identify if this is a default benefit or requires additional premium
+      - Detail any conditions that must be satisfied to avail consultations
+      - Note any waiting periods before this benefit becomes available
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each benefit
+   - Note if any of these benefits vary by policy variant
+   - Document any interdependencies between different non-treatment benefits
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any benefit is missing, indicate this explicitly
+   - Provide exact amounts, limits, conditions, and exclusions as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "non_treatment_benefits": {
+    "daily_hospitalization_cash": {
+      "benefit_amount": "",
+      "maximum_days_per_hospitalization": "",
+      "annual_day_limit": "",
+      "icu_vs_normal_amounts": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "documentation_requirements": []
+    },
+    "shared_accommodation_benefit": {
+      "benefit_amount": "",
+      "trigger_conditions": [],
+      "calculation_method": "",
+      "frequency_limit": "",
+      "exclusions": [],
+      "hospital_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": []
+    },
+    "opd_treatment": {
+      "coverage_amount": "",
+      "covered_services": [],
+      "sub_limits": {},
+      "annual_limit": "",
+      "exclusions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "documentation_requirements": []
+    },
+    "annual_health_checkup": {
+      "coverage_details": "",
+      "included_tests": [],
+      "demographic_specific_packages": {},
+      "waiting_period": "",
+      "eligibility_conditions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "member_coverage": "",
+      "frequency": ""
+    },
+    "doctor_consultation": {
+      "consultation_types": [],
+      "consultation_modes": [],
+      "consultation_limit": "",
+      "specialty_limits": {},
+      "exclusions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "waiting_period": ""
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

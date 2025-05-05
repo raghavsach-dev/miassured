@@ -26,7 +26,7 @@ import { FileUpload } from '../components/FileUpload';
 
 const MotionBox = motion(Box);
 
-export default function Dashboard() {
+export const Dashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
@@ -79,4 +79,4 @@ export default function Dashboard() {
       </Box>
     </PageBackground>
   );
-} 
+}; 

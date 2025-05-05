@@ -1,0 +1,127 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the OPTIONAL or ADD-ON BENEFITS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. IDENTIFY and ANALYZE ALL optional, add-on, or rider benefits mentioned in the policy document. These are benefits that:
+   - Require the customer's explicit opt-in
+   - May require additional premium
+   - Are not part of the standard/base/default coverage
+
+2. For EACH optional or add-on benefit identified, extract and analyze the following information:
+
+   a) BENEFIT IDENTIFICATION
+      - Document the exact name of the optional benefit/add-on/rider
+      - Identify if it's categorized as a rider, add-on, or optional cover
+      - Note any marketing names or branding associated with the benefit
+      - Document the section/page of the policy where this benefit is described
+
+   b) BENEFIT OVERVIEW
+      - Provide a comprehensive summary of what the benefit covers
+      - Identify the core purpose of this add-on benefit
+      - Detail how this benefit extends or enhances the base policy coverage
+      - Note any unique selling points or differentiators of this benefit
+
+   c) COVERAGE DETAILS
+      - Document the exact coverage amount or limit
+      - Identify if the coverage is a fixed amount or percentage of sum insured
+      - Detail any sub-limits within the benefit
+      - Note if the benefit has any aggregate annual limits
+      - List all specific items, conditions, or situations covered
+      - Document any coverage enhancements over standard policy terms
+
+   d) WAITING PERIODS
+      - Document any waiting periods specific to this optional benefit
+      - Identify if the waiting period differs from standard policy waiting periods
+      - Detail any conditions for waiver of waiting period
+      - Note if waiting periods vary based on conditions or treatments
+      - List any immediate coverage components without waiting periods
+
+   e) EXCLUSIONS AND RESTRICTIONS
+      - List all specific exclusions applicable to this optional benefit
+      - Identify any conditions or restrictions for availing the benefit
+      - Detail any geographical limitations
+      - Note any time-based restrictions
+      - Document any usage frequency limitations
+      - List any pre-authorization requirements specific to this benefit
+
+   f) PREMIUM IMPACT
+      - Document the exact additional premium required (amount or percentage)
+      - Identify if the premium varies by age, sum insured, or other factors
+      - Detail any discounts available on this optional benefit
+      - Note how selecting this benefit impacts overall policy premium
+      - Document if premium for this benefit is fixed or variable over policy term
+
+   g) CLAIM PROCESS
+      - Detail any specific claim process for this optional benefit
+      - Identify any additional documentation required
+      - Note any special settlement procedures
+      - Document any third-party administrators involved
+      - List any claim intimation timeframes specific to this benefit
+
+3. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Cross-reference information from different sections of the policy
+   - Identify any interdependencies between different optional benefits
+   - Note any optional benefits that cannot be combined with others
+
+4. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any benefit is missing, indicate this explicitly
+   - Provide exact amounts, percentages, conditions, and limitations as specified
+   - Distinguish between optional benefits and standard/default coverages
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "optional_addon_benefits": [
+    {
+      "benefit_name": "",
+      "benefit_type": "",
+      "benefit_summary": "",
+      "purpose": "",
+      "coverage_details": {
+        "coverage_amount": "",
+        "coverage_type": "",
+        "sub_limits": {},
+        "annual_limits": "",
+        "specific_coverages": []
+      },
+      "waiting_period": {
+        "duration": "",
+        "differences_from_standard": "",
+        "waiver_conditions": [],
+        "condition_specific_periods": {},
+        "immediate_coverage_components": []
+      },
+      "restrictions": {
+        "exclusions": [],
+        "conditions": [],
+        "geographical_limitations": [],
+        "time_restrictions": [],
+        "frequency_limitations": "",
+        "pre_authorization_requirements": []
+      },
+      "premium_impact": {
+        "additional_premium": "",
+        "variation_factors": [],
+        "available_discounts": [],
+        "overall_impact": "",
+        "premium_nature": ""
+      },
+      "claim_process": {
+        "specific_procedures": [],
+        "additional_documentation": [],
+        "settlement_procedures": "",
+        "third_party_administrators": [],
+        "intimation_timeframes": ""
+      }
+    }
+  ],
+  "combination_restrictions": [],
+  "eligibility_criteria": {}
+}
+
+Include multiple benefit objects in the array, one for each optional or add-on benefit found in the policy. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

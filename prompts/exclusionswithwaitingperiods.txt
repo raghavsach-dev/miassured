@@ -1,0 +1,114 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the EXCLUSIONS WITH WAITING PERIODS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following exclusions with waiting periods:
+
+   a) STANDARD EXCLUSION - 30-DAYS INITIAL WAITING PERIOD (CODE-EXCL03)
+      - Document the exact waiting period duration (number of days)
+      - List all expenses/conditions explicitly excluded during this period
+      - Identify any expenses/conditions that are NOT excluded during this period
+      - Detail all conditions that must be satisfied for these exclusions to apply
+      - Note any exceptions to this waiting period (e.g., accidents, specific conditions)
+      - Document if this waiting period applies to renewals or only to first-time policies
+
+   b) STANDARD EXCLUSION - PRE-EXISTING DISEASES (PED) WAITING PERIOD (CODE-EXCL01)
+      - Document the exact waiting period duration for pre-existing diseases
+      - Identify how the policy defines "pre-existing diseases"
+      - List any specific pre-existing conditions with unique waiting periods
+      - Detail any conditions for disclosure of pre-existing diseases
+      - Note any variant-specific differences in PED waiting periods
+      - Document any exceptions where PED waiting period may be reduced or waived
+
+   c) STANDARD EXCLUSION - SPECIFIED DISEASES/PROCEDURES WAITING PERIOD (NON-PED) (CODE-EXCL02)
+      - Document the exact waiting period duration for specified diseases/procedures
+      - List all specific diseases and procedures subject to this waiting period
+      - Identify any expenses related to these conditions that may still be covered
+      - Detail all conditions that must be satisfied after the waiting period
+      - Note any variant-specific differences in specified disease waiting periods
+      - Document any exceptions where these waiting periods may be reduced or waived
+
+   d) NON-STANDARD EXCLUSION - PERSONAL WAITING PERIOD
+      - Document how personal waiting periods are determined and applied
+      - Identify circumstances under which personal waiting periods are imposed
+      - List any conditions that commonly receive personal waiting periods
+      - Detail the process for determining the duration of personal waiting periods
+      - Note any appeals or review processes for personal waiting periods
+      - Document how personal waiting periods differ from standard waiting periods
+
+   e) MATERNITY WAITING PERIOD
+      - Document the exact waiting period duration for maternity benefits
+      - Identify all expenses covered after the maternity waiting period
+      - List any expenses that remain excluded even after the waiting period
+      - Detail conditions that must be satisfied to access maternity benefits
+      - Note any variant-specific differences in maternity waiting periods
+      - Document if the waiting period applies to specific complications or all maternity-related expenses
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each exclusion type
+   - Note if any of these exclusions vary by policy variant or policyholder characteristics
+   - Document any disclosure requirements related to these waiting periods
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any exclusion is missing, indicate this explicitly
+   - Provide exact durations, conditions, and exemptions as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "exclusions_with_waiting_periods": {
+    "initial_waiting_period": {
+      "duration": "",
+      "excluded_expenses": [],
+      "covered_expenses": [],
+      "conditions": [],
+      "exceptions": [],
+      "renewal_applicability": ""
+    },
+    "pre_existing_diseases_waiting_period": {
+      "duration": "",
+      "definition": "",
+      "specific_conditions": [
+        {
+          "condition_name": "",
+          "specific_waiting_period": "",
+          "specific_conditions": []
+        }
+      ],
+      "disclosure_requirements": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "specified_diseases_procedures_waiting_period": {
+      "duration": "",
+      "included_diseases_procedures": [],
+      "partial_coverage_details": [],
+      "post_waiting_period_conditions": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "personal_waiting_period": {
+      "determination_criteria": [],
+      "triggering_circumstances": [],
+      "common_conditions": [],
+      "duration_determination_process": "",
+      "appeals_process": "",
+      "difference_from_standard_periods": []
+    },
+    "maternity_waiting_period": {
+      "duration": "",
+      "covered_expenses": [],
+      "excluded_expenses": [],
+      "conditions": [],
+      "variant_specific_differences": {},
+      "applicability_to_complications": ""
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

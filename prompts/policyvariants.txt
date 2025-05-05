@@ -1,0 +1,111 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the POLICY VARIANTS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the POLICY VARIANTS of the insurance policy:
+
+   a) VARIANT IDENTIFICATION
+      - Identify all named variants of the policy mentioned in the document
+      - Document the exact names of each variant as specified in the policy
+      - Note any categorization or grouping of variants if applicable
+
+   b) VARIANT-SPECIFIC FEATURES
+      - For each identified variant, list all features that vary compared to other variants
+      - Identify which features are enhanced, reduced, or uniquely available in each variant
+      - Document any differences in coverage amounts or limits specific to each variant
+
+   c) FEATURE SCOPE ANALYSIS
+      - For each variant-specific feature, detail the exact scope of coverage
+      - Document the specific conditions, limitations, or exclusions that apply
+      - Note any waiting periods or other time-based restrictions that vary by variant
+
+   d) VARIANT COMPARISON
+      - Compare all variants in terms of benefits, coverage, and limitations
+      - Identify the unique selling propositions for each variant
+      - Document any premium differences mentioned across variants
+
+   e) VARIANT ELIGIBILITY
+      - Extract any eligibility criteria specific to certain variants
+      - Document if certain variants are targeted at specific demographics
+      - Note any restrictions on who can purchase each variant
+
+   f) VARIANT UPGRADES/DOWNGRADES
+      - Identify if and when policyholders can switch between variants
+      - Document any conditions or limitations for upgrading/downgrading between variants
+      - Note any waiting periods or other implications when changing variants
+
+   g) BUNDLED BENEFITS
+      - Identify any default add-ons or bundled benefits specific to certain variants
+      - Document any optional add-ons available only to specific variants
+      - Note how these bundled benefits affect the overall coverage or premium
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied variations between variants
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any variant-specific terms and conditions
+   - Note if certain variants have unique documentation requirements
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any variant or feature is missing, indicate this explicitly
+   - Provide exact values, ranges, and limits as specified in the document for each variant
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "policy_variants": {
+    "variant_list": [],
+    "variant_details": [
+      {
+        "variant_name": "",
+        "variant_description": "",
+        "target_demographic": "",
+        "unique_features": [],
+        "enhanced_features": [
+          {
+            "feature_name": "",
+            "enhancement_details": "",
+            "conditions": []
+          }
+        ],
+        "reduced_features": [
+          {
+            "feature_name": "",
+            "reduction_details": "",
+            "conditions": []
+          }
+        ],
+        "exclusive_features": [
+          {
+            "feature_name": "",
+            "feature_details": "",
+            "conditions": []
+          }
+        ],
+        "bundled_benefits": [],
+        "optional_add_ons": [],
+        "eligibility_criteria": [],
+        "premium_factors": []
+      }
+    ],
+    "variant_comparison": {
+      "common_features": [],
+      "key_differences": [
+        {
+          "feature_name": "",
+          "variant_differences": {}
+        }
+      ]
+    },
+    "variant_switching": {
+      "upgrade_conditions": [],
+      "downgrade_conditions": [],
+      "waiting_periods": [],
+      "implications": []
+    }
+  }
+}
+
+Fill all fields with information from the document. Include multiple variant detail objects in the "variant_details" array, one for each variant found in the policy. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

@@ -1,0 +1,160 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the TREATMENT COVERAGE aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following treatment coverage features:
+
+   a) DAY CARE TREATMENTS
+      - Document the exact coverage amount for day care treatments
+      - Identify all day care procedures/treatments specifically listed as covered
+      - Detail any sub-limits or restrictions on specific day care treatments
+      - Note any waiting periods applicable to day care treatments
+      - List any specific exclusions within day care treatments
+      - Document any pre-authorization requirements for day care treatments
+      - Identify any network hospital restrictions for day care treatments
+      - Detail any documentation requirements specific to day care claims
+      - Note any differences in coverage based on policy variant
+
+   b) ORGAN TRANSPLANT
+      - Document the exact coverage amount for organ transplant procedures
+      - Identify which specific organs' transplants are covered
+      - Detail coverage for donor expenses, if any
+      - Note any waiting periods applicable to organ transplant procedures
+      - List any specific exclusions related to organ transplant coverage
+      - Document any pre-authorization requirements for organ transplants
+      - Identify any network hospital restrictions for organ transplants
+      - Detail any limitations on post-transplant care coverage
+      - Note any differences in coverage based on policy variant
+
+   c) MODERN TREATMENTS/ADVANCED PROCEDURES
+      - Document the exact coverage amount for modern/advanced treatments
+      - Identify all modern/advanced procedures specifically listed as covered
+      - Detail any sub-limits for individual modern treatments
+      - Note any waiting periods applicable to modern treatments
+      - List any specific exclusions within modern treatments coverage
+      - Document if coverage is available as percentage of sum insured
+      - Identify any network hospital restrictions for modern treatments
+      - Detail any pre-authorization requirements for modern treatments
+      - Note any differences in coverage based on policy variant
+
+   d) ALTERNATIVE TREATMENTS (AYUSH)
+      - Document the exact coverage amount for alternative treatments
+      - Identify which alternative treatment systems are covered (Ayurveda, Yoga, Unani, Siddha, Homeopathy, etc.)
+      - Detail any sub-limits or restrictions on alternative treatments
+      - Note any waiting periods applicable to alternative treatments
+      - List any specific exclusions within alternative treatments
+      - Document any network hospital/clinic restrictions for alternative treatments
+      - Identify any requirements for practitioner qualifications
+      - Detail any documentation requirements specific to alternative treatment claims
+      - Note any differences in coverage based on policy variant
+
+   e) ARTIFICIAL LIFE MAINTENANCE
+      - Document the exact coverage amount for artificial life maintenance
+      - Identify the specific situations where artificial life maintenance is covered
+      - Detail any time limits for artificial life support coverage
+      - Note any waiting periods applicable to artificial life maintenance
+      - List any specific exclusions related to artificial life maintenance
+      - Document any pre-authorization requirements
+      - Identify any hospital restrictions for artificial life maintenance
+      - Detail any documentation requirements specific to these claims
+      - Note any differences in coverage based on policy variant
+
+   f) MENTAL DISORDERS TREATMENT
+      - Document the exact coverage amount for mental disorder treatments
+      - Identify which mental health conditions are specifically covered
+      - Detail any sub-limits for different types of mental health treatments
+      - Note any waiting periods applicable to mental disorder treatments
+      - List any specific exclusions within mental health coverage
+      - Document any coverage for outpatient mental health services
+      - Identify any restrictions on treatment providers or facilities
+      - Detail any documentation requirements specific to mental health claims
+      - Note any differences in coverage based on policy variant
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each treatment type
+   - Note if any of these treatments vary by policy variant
+   - Document any interdependencies between different treatment coverages
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any treatment is missing, indicate this explicitly
+   - Provide exact amounts, percentages, time periods, and limits as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "treatment_coverage": {
+    "day_care_treatments": {
+      "coverage_amount": "",
+      "covered_procedures": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "network_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "organ_transplant": {
+      "coverage_amount": "",
+      "covered_organs": [],
+      "donor_expense_coverage": "",
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "network_restrictions": "",
+      "post_transplant_coverage": "",
+      "variant_differences": {}
+    },
+    "modern_treatments": {
+      "coverage_amount": "",
+      "covered_procedures": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "coverage_calculation": "",
+      "network_restrictions": "",
+      "pre_authorization": "",
+      "variant_differences": {}
+    },
+    "alternative_treatments": {
+      "coverage_amount": "",
+      "covered_systems": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "network_restrictions": "",
+      "practitioner_requirements": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "artificial_life_maintenance": {
+      "coverage_amount": "",
+      "covered_situations": [],
+      "time_limits": "",
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "hospital_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "mental_disorders_treatment": {
+      "coverage_amount": "",
+      "covered_conditions": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "outpatient_coverage": "",
+      "provider_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

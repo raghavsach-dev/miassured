@@ -1,0 +1,166 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the POLICY DESIGN aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following policy design features:
+
+   a) BASE SUM INSURED AMOUNT
+      - Identify all available options for Sum Insured Amount
+      - Note any variant-specific Sum Insured options
+      - Document any conditions or limitations on Sum Insured amounts
+
+   b) COVERAGE TYPE
+      - Determine if the policy offers Individual coverage, Family Floater coverage, or both
+      - Extract any specific conditions or benefits unique to each coverage type
+
+   c) AGE ELIGIBILITY
+      - Document minimum and maximum age limits for adults
+      - Document minimum and maximum age limits for children
+      - Note any age-related conditions or restrictions
+
+   d) NUMBER OF MEMBERS ALLOWED
+      - For Individual Policy: Maximum count of adults allowed
+      - For Individual Policy: Maximum count of children allowed
+      - For Family Floater: Maximum count of adults allowed
+      - For Family Floater: Maximum count of children allowed
+      - Document any conditions on adding additional members
+
+   e) RELATIONSHIP ALLOWED
+      - List all relationships allowed under Individual Policy
+      - List all relationships allowed under Family Floater
+      - Note any relationship-specific conditions or restrictions
+
+   f) MAXIMUM RENEWAL AGE
+      - For Individual Policy: Maximum renewal age for adults
+      - For Individual Policy: Maximum renewal age for children
+      - For Family Floater: Maximum renewal age for adults
+      - For Family Floater: Maximum renewal age for children
+      - Document any conditions affecting renewability based on age
+
+   g) ZONAL PRICING
+      - List all zones/locations mentioned in the policy
+      - Document how location impacts premium costs
+      - Extract any zone-change rules or conditions
+
+   h) MEMBER ADDITION
+      - Identify which members can be added to an active policy
+      - Document all available methods to add a new member
+      - Note any waiting periods or conditions for new members
+
+   i) POLICY TENURE
+      - List all available policy tenure options
+      - Document any tenure-specific benefits or discounts
+      - Note any conditions related to different tenure periods
+
+   j) PREMIUM PAYMENT CYCLE
+      - Identify all available premium payment options/installments
+      - Document conditions associated with each payment cycle
+      - Note any discounts or penalties related to payment frequency
+
+   k) PRE-POLICY MEDICAL CHECKUP
+      - List who requires pre-policy medical checkups
+      - Document all conditions triggering a required medical checkup
+      - Note any age or sum insured thresholds affecting medical checkup requirements
+
+   l) CHANGES TO SUM INSURED
+      - Document when Sum Insured can be increased
+      - List all conditions applicable to increased Sum Insured
+      - Note any waiting periods or exclusions for the increased portion
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions
+   - Note if any of these features vary by policy variant
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any feature is missing, indicate this explicitly
+   - Provide exact values, ranges, and limits as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "policy_design": {
+    "base_sum_insured": {
+      "options": [],
+      "variant_specific_options": {},
+      "conditions": []
+    },
+    "coverage_type": {
+      "types": [],
+      "type_specific_conditions": {}
+    },
+    "age_eligibility": {
+      "adult": {
+        "minimum_age": null,
+        "maximum_age": null
+      },
+      "child": {
+        "minimum_age": null,
+        "maximum_age": null
+      },
+      "conditions": []
+    },
+    "members_allowed": {
+      "individual_policy": {
+        "max_adults": null,
+        "max_children": null
+      },
+      "family_floater": {
+        "max_adults": null,
+        "max_children": null
+      },
+      "conditions": []
+    },
+    "relationships_allowed": {
+      "individual_policy": [],
+      "family_floater": [],
+      "conditions": []
+    },
+    "maximum_renewal_age": {
+      "individual_policy": {
+        "adults": null,
+        "children": null
+      },
+      "family_floater": {
+        "adults": null,
+        "children": null
+      },
+      "conditions": []
+    },
+    "zonal_pricing": {
+      "zones": [],
+      "premium_impact": [],
+      "conditions": []
+    },
+    "member_addition": {
+      "eligible_members": [],
+      "methods": [],
+      "conditions": []
+    },
+    "policy_tenure": {
+      "options": [],
+      "benefits": [],
+      "conditions": []
+    },
+    "premium_payment_cycle": {
+      "options": [],
+      "conditions": []
+    },
+    "pre_policy_medical_checkup": {
+      "required_for": [],
+      "triggering_conditions": [],
+      "exemptions": []
+    },
+    "sum_insured_changes": {
+      "increase_allowed_when": [],
+      "conditions": [],
+      "waiting_periods": []
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use null for numeric values and empty arrays [] for lists. For object values, maintain the structure but use null or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

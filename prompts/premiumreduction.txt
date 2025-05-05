@@ -1,0 +1,168 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the PREMIUM REDUCTION aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following premium reduction features:
+
+   a) TENURE DISCOUNT
+      - Document the exact discount percentages offered for multi-year policy tenures
+      - Identify which policy tenures are eligible for discounts (2-year, 3-year, etc.)
+      - Detail how the discount is applied (upfront/annually)
+      - Note any conditions that must be satisfied to avail tenure discounts
+      - List any restrictions or limitations on tenure discounts
+      - Document if these discounts vary by policy variant or sum insured amount
+      - Identify if discounts are available for both new policies and renewals
+      - Detail any impact on other benefits or features when opting for tenure discounts
+
+   b) HOSPITALIZATION IN ONLY NETWORK HOSPITALS
+      - Document the exact discount percentage offered
+      - Identify all conditions that must be satisfied to avail this discount
+      - Detail how non-network hospitalization affects the discount
+      - Note any emergency exceptions allowed without losing the discount
+      - List any geographic limitations or requirements
+      - Document how this discount is applied (upfront/at renewal)
+      - Identify if this option is available across all policy variants
+      - Detail any impact on claim settlement or other benefits
+
+   c) ROOM RENT MODIFICATION
+      - Document the exact discount percentages for different room rent modifications
+      - Identify all room categories/types available for selection
+      - Detail how proportionate deductions are applied with modified room rent limits
+      - Note any conditions that must be satisfied to avail this discount
+      - List any procedures or treatments exempt from room rent modifications
+      - Document if this discount varies by policy variant or hospital type
+      - Identify if this option can be changed at renewal
+      - Detail any impact on other benefits when opting for room rent modification
+
+   d) OPTIONAL CO-PAYMENT
+      - Document the exact co-payment percentages available for selection
+      - Identify the corresponding premium discount for each co-payment percentage
+      - Detail how the co-payment is applied across different types of claims
+      - Note any conditions that must be satisfied to avail this discount
+      - List any treatments or procedures exempt from the optional co-payment
+      - Document if the co-payment varies by policy variant or age group
+      - Identify if co-payment options can be changed at renewal
+      - Detail any impact on claim settlement when opting for co-payment
+
+   e) ANNUAL AGGREGATE DEDUCTIBLE
+      - Document the exact deductible amounts available for selection
+      - Identify the corresponding premium discount for each deductible amount
+      - Detail how the deductible is accumulated and applied
+      - Note any conditions that must be satisfied to avail this discount
+      - List any claims or expenses exempt from the deductible
+      - Document if deductible options vary by policy variant or sum insured
+      - Identify if deductible amounts can be changed at renewal
+      - Detail the claim process when a policy has an aggregate deductible
+
+   f) ACTIVE/HEALTHY LIFE DISCOUNT
+      - Document the exact discount percentages available
+      - Identify what health/fitness parameters are monitored
+      - Detail how these parameters are tracked and verified
+      - Note any conditions that must be satisfied to avail this discount
+      - List any specific wellness programs or activities required
+      - Document how frequently the health parameters are assessed
+      - Identify if this discount is applied upfront or at renewal
+      - Detail any technological requirements (apps/devices) for monitoring
+
+   g) LOCK THE PREMIUM
+      - Document the exact mechanism of premium locking
+      - Identify how the age of the eldest insured person affects premium locking
+      - Detail for how long the premium remains locked
+      - Note any conditions that must be satisfied to avail this feature
+      - List any circumstances that might void the premium lock
+      - Document how policy modifications affect the locked premium
+      - Identify any additional benefits or restrictions with locked premium
+      - Detail if this feature is available across all policy variants
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each discount type
+   - Note if any of these features vary by policy variant, sum insured band, or policyholder characteristics
+   - Document any interdependencies between different premium reduction features
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any feature is missing, indicate this explicitly
+   - Provide exact discount percentages, conditions, and limitations as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "premium_reduction": {
+    "tenure_discount": {
+      "discount_percentages": {},
+      "eligible_tenures": [],
+      "application_method": "",
+      "conditions": [],
+      "limitations": [],
+      "variant_differences": {},
+      "renewal_applicability": "",
+      "impact_on_benefits": []
+    },
+    "network_hospital_restriction": {
+      "discount_percentage": "",
+      "conditions": [],
+      "non_network_impact": "",
+      "emergency_exceptions": [],
+      "geographic_limitations": [],
+      "application_method": "",
+      "variant_applicability": "",
+      "impact_on_claims": []
+    },
+    "room_rent_modification": {
+      "discount_percentages": {},
+      "available_categories": [],
+      "proportionate_deduction_details": "",
+      "conditions": [],
+      "exempt_procedures": [],
+      "variant_differences": {},
+      "renewal_changes": "",
+      "impact_on_benefits": []
+    },
+    "optional_copayment": {
+      "available_percentages": [],
+      "corresponding_discounts": {},
+      "application_method": "",
+      "conditions": [],
+      "exempt_treatments": [],
+      "variant_age_differences": {},
+      "renewal_changes": "",
+      "impact_on_claims": []
+    },
+    "annual_aggregate_deductible": {
+      "available_amounts": [],
+      "corresponding_discounts": {},
+      "accumulation_method": "",
+      "conditions": [],
+      "exempt_claims": [],
+      "variant_differences": {},
+      "renewal_changes": "",
+      "claim_process": ""
+    },
+    "healthy_life_discount": {
+      "discount_percentages": {},
+      "monitored_parameters": [],
+      "tracking_method": "",
+      "conditions": [],
+      "required_programs": [],
+      "assessment_frequency": "",
+      "application_timing": "",
+      "technology_requirements": []
+    },
+    "premium_lock": {
+      "locking_mechanism": "",
+      "age_impact": "",
+      "lock_duration": "",
+      "conditions": [],
+      "voiding_circumstances": [],
+      "modification_impact": "",
+      "additional_aspects": [],
+      "variant_applicability": ""
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

@@ -1,0 +1,174 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the HOSPITALIZATION EXPENSE COVERAGE aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following hospitalization expense coverage features:
+
+   a) IN-PATIENT CARE
+      - Document the coverage amount or limits
+      - Identify all expenses specifically covered under in-patient care
+      - List all expenses explicitly not covered
+      - Detail all conditions that must be satisfied for coverage
+      - Note any sub-limits or restrictions on in-patient care coverage
+
+   b) PRE-HOSPITALIZATION EXPENSES
+      - Document the coverage amount or percentage
+      - Identify the time period covered before hospitalization (e.g., 30/60/90 days)
+      - List all expenses specifically covered for pre-hospitalization
+      - List all expenses explicitly not covered
+      - Detail all conditions that must be satisfied for coverage
+      - Note any documentation requirements specific to pre-hospitalization claims
+
+   c) POST-HOSPITALIZATION EXPENSES
+      - Document the coverage amount or percentage
+      - Identify the time period covered after hospitalization (e.g., 60/90/180 days)
+      - List all expenses specifically covered for post-hospitalization
+      - List all expenses explicitly not covered
+      - Detail all conditions that must be satisfied for coverage
+      - Note any documentation requirements specific to post-hospitalization claims
+
+   d) ROOM RENT/CATEGORY ELIGIBILITY
+      - Document the exact room rent limits or categories covered
+      - Identify if limits are fixed amounts or percentages of sum insured
+      - Detail any impact on other claim components if room rent exceeds eligible limits
+      - List any variant-specific differences in room rent eligibility
+      - Note any conditions or exceptions to room rent restrictions
+
+   e) ICU RENT CAPPING
+      - Document the exact ICU rent limits
+      - Identify if limits are fixed amounts or percentages of sum insured
+      - Detail any impact on other claim components if ICU rent exceeds eligible limits
+      - List any variant-specific differences in ICU rent eligibility
+      - Note any conditions or exceptions to ICU rent restrictions
+
+   f) MANDATORY CO-PAYMENT
+      - Document the co-payment percentage required
+      - Identify if co-payment varies by age, medical condition, or treatment type
+      - List any treatments or conditions exempt from co-payment
+      - Detail any variant-specific differences in co-payment requirements
+      - Note any conditions where co-payment may be waived
+
+   g) DOMICILIARY/HOME HOSPITALIZATION
+      - Document the coverage amount or limits for domiciliary treatment
+      - List specific conditions or treatments covered under domiciliary hospitalization
+      - Identify all expenses specifically excluded from domiciliary coverage
+      - Detail all conditions that must be satisfied for domiciliary coverage
+      - Note any documentation requirements specific to domiciliary claims
+
+   h) ROAD AMBULANCE
+      - Document the coverage amount or limits for road ambulance services
+      - Identify if coverage is per hospitalization, per policy year, or per insured
+      - List all conditions under which ambulance services are covered
+      - Detail any exclusions specific to ambulance coverage
+      - Note any network restrictions for ambulance services
+
+   i) AIR AMBULANCE
+      - Document the coverage amount or limits for air ambulance services
+      - Identify if coverage is per hospitalization, per policy year, or per insured
+      - List all conditions under which air ambulance services are covered
+      - Detail any geographical or situational restrictions for air ambulance coverage
+      - Note any pre-authorization requirements for air ambulance services
+
+   j) NON-MEDICAL/NON-PAYABLE ITEMS
+      - Identify which typically non-payable items are covered in the policy
+      - Document any limits or sub-limits for such items
+      - List non-medical items that remain explicitly excluded
+      - Detail any conditions for coverage of otherwise non-payable items
+      - Note any variant-specific differences in coverage of non-medical items
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each coverage feature
+   - Note if any of these features vary by policy variant
+   - Look for interconnections between different hospitalization coverage features
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any feature is missing, indicate this explicitly
+   - Provide exact values, percentages, time periods, and limits as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "hospitalization_expense_coverage": {
+    "in_patient_care": {
+      "coverage_amount": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "sub_limits": []
+    },
+    "pre_hospitalization_expenses": {
+      "coverage_amount": "",
+      "time_period": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "post_hospitalization_expenses": {
+      "coverage_amount": "",
+      "time_period": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "room_rent_eligibility": {
+      "limit_type": "",
+      "limit_value": "",
+      "proportionate_deduction": "",
+      "variant_specific_differences": {},
+      "conditions": [],
+      "exceptions": []
+    },
+    "icu_rent_capping": {
+      "limit_type": "",
+      "limit_value": "",
+      "proportionate_deduction": "",
+      "variant_specific_differences": {},
+      "conditions": [],
+      "exceptions": []
+    },
+    "mandatory_copayment": {
+      "percentage": "",
+      "applicability": [],
+      "exemptions": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "domiciliary_hospitalization": {
+      "coverage_amount": "",
+      "covered_conditions": [],
+      "excluded_expenses": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "road_ambulance": {
+      "coverage_amount": "",
+      "coverage_basis": "",
+      "coverage_conditions": [],
+      "exclusions": [],
+      "network_restrictions": []
+    },
+    "air_ambulance": {
+      "coverage_amount": "",
+      "coverage_basis": "",
+      "coverage_conditions": [],
+      "geographical_restrictions": [],
+      "pre_authorization_requirements": []
+    },
+    "non_medical_items": {
+      "covered_items": [],
+      "limits": {},
+      "excluded_items": [],
+      "coverage_conditions": [],
+      "variant_specific_differences": {}
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

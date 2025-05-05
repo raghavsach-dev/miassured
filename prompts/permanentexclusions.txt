@@ -1,0 +1,97 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the PERMANENT EXCLUSIONS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following permanent exclusions:
+
+   a) STANDARD PERMANENT EXCLUSIONS (CODES-EXCL04 TO EXCL018)
+      - Identify all standard exclusions mentioned in the policy (Codes Excl04 to Excl018)
+      - Document the exact wording of each standard exclusion
+      - List any clarifications or specific interpretations of these standard exclusions
+      - Detail any exceptions to these standard exclusions
+      - Note if any standard exclusions have been modified from their regulatory default wording
+      - Document any conditions under which these exclusions might be partially waived
+
+   b) PERMANENT EXCLUSIONS OF PRE-EXISTING DISEASES
+      - List all pre-existing diseases (PEDs) that are permanently excluded
+      - Identify how these permanent PED exclusions differ from PEDs with waiting periods
+      - Document any conditions under which a PED might be reclassified as permanently excluded
+      - Note any disclosure requirements specific to permanently excluded PEDs
+      - Detail any appeals process for challenging permanent PED exclusions
+      - Document any variant-specific differences in permanent PED exclusions
+
+   c) NON-STANDARD PERMANENT EXCLUSIONS
+      - List all insurer-specific permanent exclusions not covered under standard codes
+      - Document the exact wording and scope of each non-standard exclusion
+      - Identify any procedures, treatments, or charges specifically called out
+      - Detail any conditions or circumstances that activate these exclusions
+      - Note any documentation requirements related to these exclusions
+      - Document any impact of these exclusions on overall policy benefits
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit exclusions as well as implied exclusions within policy language
+   - Pay attention to footnotes, appendices, or referenced documents that expand on exclusions
+   - Identify any special cases or conditions for each exclusion type
+   - Note if any exclusions vary by policy variant, policyholder characteristics, or geographic location
+   - Document the relationship between different types of exclusions
+
+3. CATEGORIZE exclusions by the following types where applicable:
+   - Treatment-specific exclusions (e.g., cosmetic surgery, experimental treatments)
+   - Condition-specific exclusions (e.g., congenital disorders, specific diseases)
+   - Behavior-related exclusions (e.g., self-inflicted injuries, substance abuse)
+   - Time-bound permanent exclusions (exclusions applied to specific time periods)
+   - Facility or provider-specific exclusions
+   - Geography-based exclusions
+
+4. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any exclusion is missing, indicate this explicitly
+   - Provide exact wording and scope as specified in the document
+   - Note any ambiguities in the exclusion language
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "permanent_exclusions": {
+    "standard_permanent_exclusions": [
+      {
+        "exclusion_code": "",
+        "exclusion_description": "",
+        "clarifications": [],
+        "exceptions": [],
+        "modifications_from_standard": "",
+        "partial_waiver_conditions": []
+      }
+    ],
+    "pre_existing_diseases_permanent_exclusions": {
+      "permanently_excluded_peds": [],
+      "difference_from_waiting_period_peds": [],
+      "reclassification_conditions": [],
+      "disclosure_requirements": [],
+      "appeals_process": "",
+      "variant_specific_differences": {}
+    },
+    "non_standard_permanent_exclusions": [
+      {
+        "exclusion_name": "",
+        "exclusion_description": "",
+        "specific_items_excluded": [],
+        "activating_conditions": [],
+        "documentation_requirements": [],
+        "impact_on_benefits": ""
+      }
+    ],
+    "categorized_exclusions": {
+      "treatment_specific": [],
+      "condition_specific": [],
+      "behavior_related": [],
+      "time_bound": [],
+      "facility_provider_specific": [],
+      "geography_based": []
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

@@ -1,0 +1,125 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the MATERNITY FEATURES aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following maternity features:
+
+   a) MATERNITY COVERAGE
+      - Document the exact coverage amount for maternity expenses
+      - Identify if coverage is a fixed amount or percentage of sum insured
+      - Detail any sub-limits for different delivery types (normal/cesarean)
+      - Note the waiting period before maternity benefits become available
+      - List any pre and post-natal expenses covered
+      - Document any complications of pregnancy covered
+      - Identify any network hospital restrictions for maternity claims
+      - Detail any specific exclusions related to maternity coverage
+      - Note if maternity coverage is a default benefit or requires additional premium
+      - Document any policyholder relationship requirements for availing maternity benefits
+      - Identify any age restrictions for maternity coverage
+      - Detail any documentation requirements specific to maternity claims
+      - Note any differences in coverage based on policy variant
+
+   b) NEW BORN BABY COVER
+      - Document from what age/day the newborn is covered
+      - Identify the coverage amount for newborn expenses
+      - Detail any sub-limits for specific newborn treatments
+      - Note any waiting period for newborn coverage after birth
+      - List all congenital conditions covered for newborns
+      - Document any vaccination coverage for newborns
+      - Identify any specific exclusions related to newborn coverage
+      - Detail the process to add the newborn to the policy
+      - Note the time period within which newborn must be added to the policy
+      - Document any medical check-up requirements for the newborn
+      - Identify if this coverage is a default benefit or requires additional premium
+      - Note any differences in coverage based on policy variant
+
+   c) IVF COVERAGE
+      - Document the exact coverage amount for IVF/infertility treatments
+      - Identify which specific fertility treatments are covered
+      - Detail any sub-limits for different fertility procedures
+      - Note the waiting period before IVF benefits become available
+      - List any specific exclusions related to fertility treatments
+      - Document any maximum number of IVF cycles covered
+      - Identify any age restrictions for IVF coverage
+      - Detail any specific documentation requirements for IVF claims
+      - Note if IVF coverage is a default benefit or requires additional premium
+      - Document any policyholder relationship requirements for availing IVF benefits
+      - Identify any network hospital/clinic restrictions for IVF treatments
+      - Note any differences in coverage based on policy variant
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each maternity feature
+   - Note if any of these features vary by policy variant
+   - Document any interdependencies between different maternity features
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any feature is missing, indicate this explicitly
+   - Provide exact amounts, percentages, time periods, and limits as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "maternity_features": {
+    "maternity_coverage": {
+      "coverage_amount": "",
+      "coverage_type": "",
+      "delivery_type_sub_limits": {
+        "normal_delivery": "",
+        "cesarean_delivery": ""
+      },
+      "waiting_period": "",
+      "pre_post_natal_coverage": {
+        "pre_natal": [],
+        "post_natal": []
+      },
+      "pregnancy_complications_covered": [],
+      "network_restrictions": "",
+      "specific_exclusions": [],
+      "premium_requirement": "",
+      "relationship_requirements": "",
+      "age_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "newborn_baby_cover": {
+      "coverage_start": "",
+      "coverage_amount": "",
+      "specific_treatment_sub_limits": {},
+      "waiting_period": "",
+      "congenital_conditions_covered": [],
+      "vaccination_coverage": "",
+      "specific_exclusions": [],
+      "addition_process": "",
+      "addition_timeframe": "",
+      "medical_requirements": "",
+      "premium_requirement": "",
+      "variant_differences": {}
+    },
+    "ivf_coverage": {
+      "coverage_amount": "",
+      "covered_treatments": [],
+      "treatment_sub_limits": {},
+      "waiting_period": "",
+      "specific_exclusions": [],
+      "maximum_cycles": "",
+      "age_restrictions": "",
+      "documentation_requirements": [],
+      "premium_requirement": "",
+      "relationship_requirements": "",
+      "network_restrictions": "",
+      "variant_differences": {}
+    },
+    "maternity_related_conditions": {
+      "is_dependent_on_policy_type": "",
+      "family_size_requirements": "",
+      "continuation_for_renewals": ""
+    }
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

@@ -1,0 +1,102 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the SUM INSURED (SI) ENHANCEMENT aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. Extract and analyze ALL information related to the following SI Enhancement features:
+
+   a) RESTORE/RESET SUM INSURED
+      - Document the exact mechanism of sum insured restoration (complete/partial)
+      - Identify the trigger conditions for restoration (e.g., after complete exhaustion)
+      - Detail any limitations on what the restored sum insured can be used for
+      - Note any caps or limits on the restoration amount
+      - List the number of times restoration can be availed in a policy year
+      - Document if restoration applies to individual members or the entire family in family floater policies
+      - Identify if restoration requires additional premium or is a default feature
+      - Detail any waiting periods after restoration before the restored amount can be used
+      - List any diseases/conditions explicitly excluded from restoration coverage
+
+   b) NO CLAIM BONUS
+      - Document the exact percentage or amount of No Claim Bonus (NCB)
+      - Identify if NCB accumulates as additional sum insured or discount on premium
+      - Detail the maximum limit up to which NCB can accumulate
+      - Note how NCB is affected by partial claims or small claims
+      - List any conditions under which NCB might be reduced or reset to zero
+      - Document if NCB applies to individual members or the entire family in family floater policies
+      - Identify any variant-specific differences in NCB structure
+      - Detail if NCB is applied at renewal or during the policy term
+      - List any diseases/conditions explicitly excluded from NCB earned sum insured
+
+   c) UTILIZATION SEQUENCE OF ENHANCED SUM INSURED
+      - Document the exact sequence in which different sum insured components are utilized
+      - Identify which component is used first (base SI, NCB, restoration, etc.)
+      - Detail any customer choice available in the utilization sequence
+      - Note any disease-specific or treatment-specific utilization sequences
+      - List any component-specific restrictions in the utilization sequence
+      - Document how the utilization sequence affects future benefits or restorations
+      - Identify if the utilization sequence varies by claim type or size
+      - Detail how deductibles or co-payments apply in the utilization sequence
+
+2. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Identify any special cases or exceptions for each enhancement feature
+   - Note if any of these features vary by policy variant or sum insured band
+   - Document the interdependencies between different SI enhancement features
+
+3. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any feature is missing, indicate this explicitly
+   - Provide exact values, percentages, conditions, and limitations as specified in the document
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "si_enhancement": {
+    "restore_reset_sum_insured": {
+      "feature_name": "",
+      "restoration_mechanism": "",
+      "trigger_conditions": [],
+      "usage_limitations": [],
+      "restoration_amount": "",
+      "frequency_limit": "",
+      "application_scope": "",
+      "premium_requirement": "",
+      "waiting_period": "",
+      "excluded_conditions": []
+    },
+    "no_claim_bonus": {
+      "feature_name": "",
+      "bonus_type": "",
+      "bonus_amount": "",
+      "maximum_accumulation": "",
+      "partial_claim_impact": "",
+      "reduction_conditions": [],
+      "application_scope": "",
+      "variant_differences": {},
+      "application_timing": "",
+      "excluded_conditions": []
+    },
+    "utilization_sequence": {
+      "feature_name": "",
+      "sequence_order": [],
+      "customer_choice_options": [],
+      "condition_specific_sequences": {},
+      "component_restrictions": [],
+      "future_benefit_impact": "",
+      "claim_specific_variations": {},
+      "deductible_copay_application": ""
+    },
+    "additional_enhancement_features": [
+      {
+        "feature_name": "",
+        "description": "",
+        "conditions": [],
+        "premium_impact": ""
+      }
+    ]
+  }
+}
+
+Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

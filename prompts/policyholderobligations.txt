@@ -1,0 +1,111 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the POLICYHOLDER OBLIGATIONS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. IDENTIFY and ANALYZE ALL aspects of the policy where policyholders have obligations, responsibilities, or duties. These could include:
+   - Disclosure requirements at the time of application
+   - Premium payment obligations
+   - Claim notification requirements
+   - Medical examination requirements
+   - Documentation submission timelines
+   - Renewal obligations
+   - Disclosure of changed circumstances
+   - Cooperation during claim processing
+   - Any other responsibilities placed on the policyholder
+
+2. For EACH policyholder obligation identified, extract and analyze the following information:
+
+   a) OBLIGATION IDENTIFICATION
+      - Document the exact name or description of the obligation/responsibility
+      - Identify the section/page of the policy where this obligation is described
+      - Categorize the type of obligation (disclosure, payment, notification, etc.)
+      - Note when in the policy lifecycle this obligation applies (application, during coverage, claim time, renewal)
+
+   b) OBLIGATION OVERVIEW
+      - Provide a comprehensive summary of the obligation
+      - Identify the core purpose of this obligation
+      - Detail why this obligation is important for the insurer
+      - Note any unique aspects or special considerations related to this obligation
+
+   c) OBLIGATION SPECIFICS
+      - Document the exact requirements the policyholder must fulfill
+      - Identify any timelines or deadlines associated with the obligation
+      - Detail any specific formats, channels, or methods required
+      - Note any variations in the obligation based on circumstances
+      - List any exceptions where the obligation may be waived
+      - Document any assistance the insurer provides in fulfilling the obligation
+
+   d) CONSEQUENCES OF NON-COMPLIANCE
+      - Detail what happens if the policyholder fails to meet this obligation
+      - Identify if non-compliance results in claim rejection
+      - Document if non-compliance affects policy validity
+      - Note if non-compliance impacts specific benefits only
+      - List any penalties, surcharges, or financial consequences
+      - Document any remedial actions available to the policyholder
+      - Detail any grace periods or opportunities to correct the non-compliance
+
+   e) MITIGATION FACTORS
+      - List any factors that might mitigate consequences of non-compliance
+      - Identify any discretionary powers the insurer has regarding enforcement
+      - Detail any appeals process available to the policyholder
+      - Note any circumstances where consequences might be reduced
+      - Document any regulatory protections for policyholders
+
+3. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit obligations as well as implied duties
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Cross-reference information from different sections of the policy
+   - Identify any obligations that vary by policy variant or policyholder type
+   - Note any interdependencies between different obligations
+
+4. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any obligation is missing, indicate this explicitly
+   - Provide exact timelines, requirements, and consequences as specified
+   - Distinguish between hard requirements and recommendations
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "policyholder_obligations": [
+    {
+      "obligation_name": "",
+      "obligation_category": "",
+      "policy_lifecycle_stage": "",
+      "obligation_summary": "",
+      "purpose": "",
+      "insurer_interest": "",
+      "special_considerations": "",
+      "requirements": {
+        "specific_actions": [],
+        "timelines": "",
+        "submission_methods": "",
+        "circumstantial_variations": {},
+        "exceptions": [],
+        "insurer_assistance": ""
+      },
+      "non_compliance_consequences": {
+        "claim_impact": "",
+        "policy_validity_impact": "",
+        "specific_benefit_impacts": [],
+        "financial_penalties": "",
+        "remedial_actions": "",
+        "grace_periods": ""
+      },
+      "mitigation_factors": {
+        "leniency_conditions": [],
+        "insurer_discretion": "",
+        "appeals_process": "",
+        "consequence_reduction_circumstances": [],
+        "regulatory_protections": ""
+      }
+    }
+  ],
+  "general_duty_of_disclosure": "",
+  "overarching_compliance_requirements": [],
+  "variant_specific_obligations": {}
+}
+
+Include multiple obligation objects in the array, one for each policyholder obligation found in the policy. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 

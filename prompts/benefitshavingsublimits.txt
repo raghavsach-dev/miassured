@@ -1,0 +1,127 @@
+Now that you have thoroughly analyzed the insurance document, I need you to focus specifically on the BENEFITS HAVING SUB-LIMITS aspects of the insurance policy.
+
+INSTRUCTIONS:
+1. IDENTIFY and ANALYZE ALL benefits mentioned in the policy document that have coverage sub-limits less than the Base Sum Insured. These could include:
+   - Treatment-specific benefits with monetary caps
+   - Procedure-specific benefits with coverage limits
+   - Time-bound benefits with restricted coverage
+   - Condition-specific benefits with capped amounts
+   - Any other benefit where the maximum coverage is less than the full Sum Insured
+
+2. For EACH benefit with sub-limits identified, extract and analyze the following information:
+
+   a) BENEFIT IDENTIFICATION
+      - Document the exact name of the benefit with sub-limit
+      - Identify the section/page of the policy where this benefit is described
+      - Note if this is a standard benefit or an optional/add-on benefit
+      - Classify the benefit type (treatment coverage, hospitalization expense, etc.)
+
+   b) BENEFIT OVERVIEW
+      - Provide a comprehensive summary of what the benefit covers
+      - Identify the core purpose of this benefit
+      - Detail how this benefit fits into the overall policy coverage
+      - Note any unique aspects or special considerations
+
+   c) SUB-LIMIT DETAILS
+      - Document the exact sub-limit amount or percentage of sum insured
+      - Identify if the sub-limit is a fixed amount or varies by sum insured band
+      - Detail if the sub-limit is per claim, per year, or per policy term
+      - Note how the sub-limit compares to the full sum insured
+      - Document if the sub-limit can be enhanced through any add-ons
+      - List any variant-specific differences in sub-limits
+
+   d) COVERAGE SPECIFICS
+      - List all specific items, procedures, or conditions covered under this benefit
+      - Identify any specific exclusions within this benefit
+      - Detail any coverage limitations beyond the monetary sub-limit
+      - Note any specific documentation requirements to avail this benefit
+      - Document any coverage enhancements available for this benefit
+
+   e) WAITING PERIODS
+      - Document any waiting periods specific to this benefit
+      - Identify if the waiting period differs from standard policy waiting periods
+      - Detail any conditions for waiver of waiting period
+      - Note if waiting periods vary based on conditions or severity
+      - List any immediate coverage components without waiting periods
+
+   f) CONDITIONS AND RESTRICTIONS
+      - List all conditions that must be satisfied to avail this benefit
+      - Identify any restrictions on usage frequency
+      - Detail any geographical limitations
+      - Note any network hospital restrictions
+      - Document any pre-authorization requirements
+      - List any post-claim restrictions or implications
+
+   g) BENEFIT TYPE
+      - Clearly indicate if this is a Base/Default feature or Optional/Add-on
+      - If optional, document any additional premium required
+      - Detail any policyholder choices that affect this benefit
+      - Note if this benefit is available across all policy variants
+
+3. ENSURE THOROUGHNESS in your analysis:
+   - Look for explicit information as well as implied conditions
+   - Pay attention to footnotes, appendices, or referenced documents
+   - Cross-reference information from different sections of the policy
+   - Identify any interdependencies between different benefits with sub-limits
+   - Note how these sub-limits affect overall policy value and coverage
+
+4. MAINTAIN ACCURACY:
+   - Only include information explicitly stated in the document
+   - Do not make assumptions or inferences unless clearly supported by the document
+   - If information about any benefit is missing, indicate this explicitly
+   - Provide exact amounts, percentages, conditions, and limitations as specified
+   - Distinguish between actual sub-limits and general coverage conditions
+
+After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+
+{
+  "benefits_with_sublimits": [
+    {
+      "benefit_name": "",
+      "benefit_summary": "",
+      "purpose": "",
+      "sublimit_details": {
+        "sublimit_amount": "",
+        "sublimit_type": "",
+        "sublimit_period": "",
+        "comparison_to_sum_insured": "",
+        "enhancement_options": [],
+        "variant_specific_differences": {}
+      },
+      "coverage": {
+        "covered_items": [],
+        "exclusions": [],
+        "additional_limitations": [],
+        "documentation_requirements": [],
+        "available_enhancements": []
+      },
+      "waiting_period": {
+        "duration": "",
+        "differences_from_standard": "",
+        "waiver_conditions": [],
+        "condition_specific_periods": {},
+        "immediate_coverage_components": []
+      },
+      "conditions_restrictions": {
+        "qualifying_conditions": [],
+        "frequency_restrictions": "",
+        "geographical_limitations": [],
+        "network_restrictions": "",
+        "pre_authorization_requirements": "",
+        "post_claim_implications": []
+      },
+      "benefit_type": {
+        "category": "",
+        "additional_premium": "",
+        "policyholder_choices": [],
+        "variant_availability": ""
+      }
+    }
+  ],
+  "impact_on_overall_coverage": "",
+  "sublimit_disclosure_requirements": []
+}
+
+Include multiple benefit objects in the array, one for each benefit with sub-limits found in the policy. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
+
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 
