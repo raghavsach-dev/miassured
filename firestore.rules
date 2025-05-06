@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if authenticated user owns the document
+    function isOwner(userEmail) {
+      return isAuthenticated() &&
+             (request.auth.token.email.replace('.', ',') == userEmail ||
+              request.auth.token.email == userEmail.replace(',', '.'));
+    }
+    
+    // Allow users to read and write to their entire user document tree
+    match /users/{userEmail}/{allPaths=**} {
+      allow read, write: if isOwner(userEmail);
+    }
+    
+    // Allow authenticated users to write to connection tests collection
+    match /connection_tests/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Allow authenticated users to write to analyses collection
+    match /analyses/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Allow authenticated users to write to test_data collection
+    match /test_data/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Allow authenticated users to write to policy_data collection
+    match /policy_data/{docId} {
+      allow read, write: if isAuthenticated();
+    }
+    
+    // Deny all other access
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+} 
