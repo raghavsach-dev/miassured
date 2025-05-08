@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI, GenerativeModel, ChatSession } from '@google/generative-ai';
 import { db } from '../firebase/config';
-import { doc, setDoc, getDoc, collection, SetOptions } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, SetOptions, DocumentReference } from 'firebase/firestore';
 
 // Initialize the Gemini API client
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
@@ -23,14 +23,11 @@ export interface PromptResponse {
   timestamp: Date;
 }
 
-// Define proper types for the Firestore data
-interface FirestoreData {
-  [key: string]: {
-    content?: unknown;
-    error?: string;
-    rawContent?: string;
-    timestamp: Date;
-  };
+interface PromptProcessingResult {
+  promptName: string;
+  content?: unknown;
+  error?: string;
+  timestamp: Date;
 }
 
 export class GeminiService {
@@ -38,64 +35,33 @@ export class GeminiService {
   private chat: ChatSession | null = null;
   private parentPrompt: string | null = null;
   private prompts: Map<string, string> = new Map();
+  private models: Map<string, GenerativeModel> = new Map();
+  private chats: Map<string, ChatSession> = new Map();
   private promptLoadingPromise: Promise<void>;
   private conversationHistory: ChatMessage[] = [];
   private promptResponses: PromptResponse[] = [];
 
   constructor() {
     this.model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-    this.promptLoadingPromise = this.loadPrompts();
-    this.initializeChat();
+    this.promptLoadingPromise = this.initializeService();
   }
 
-  // Simple function to test Firebase storage without using Gemini credits
-  async testFirebaseStorage(userEmail: string): Promise<{ success: boolean; message: string }> {
+  private async initializeService(): Promise<void> {
     try {
-      console.log("Testing Firebase storage with simple data...");
-      const timestamp = new Date();
-      const sanitizedEmail = userEmail.replace(/\./g, ',');
+      // Load prompts first
+      await this.loadPrompts();
       
-      // Try two storage approaches
-      try {
-        // Approach 1: Store in user's document
-        const docRef = doc(db, sanitizedEmail, "test_data");
-        await setDoc(docRef, {
-          testData: "This is test data",
-          timestamp: timestamp.toISOString(),
-          randomValue: Math.random().toString(36).substring(2)
-        });
-        console.log("✅ Successfully stored test data in user document");
-      } catch (userDocError) {
-        console.error("❌ Failed to store in user document:", userDocError);
-        
-        // Approach 2: Store in a general collection
-        try {
-          const generalRef = doc(collection(db, "test_data"), sanitizedEmail);
-          await setDoc(generalRef, {
-            userEmail,
-            timestamp: timestamp.toISOString(),
-            randomValue: Math.random().toString(36).substring(2)
-          });
-          console.log("✅ Successfully stored test data in general collection");
-        } catch (generalError) {
-          console.error("❌ Failed to store in general collection:", generalError);
-          return {
-            success: false,
-            message: `Failed to store test data: ${generalError instanceof Error ? generalError.message : "Unknown error"}`
-          };
-        }
-      }
-      
-      return {
-        success: true,
-        message: "Successfully stored test data in Firebase"
-      };
+      // Initialize models after prompts are loaded
+      this.prompts.forEach((_, promptName) => {
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+        this.models.set(promptName, model);
+      });
+
+      // Initialize main chat
+      this.initializeChats('');
     } catch (error) {
-      console.error("Error testing Firebase storage:", error);
-      return {
-        success: false,
-        message: `Failed to store test data: ${error instanceof Error ? error.message : "Unknown error"}`
-      };
+      console.error('Failed to initialize service:', error);
+      throw error;
     }
   }
 
@@ -140,12 +106,27 @@ export class GeminiService {
     }
   }
 
-  private initializeChat() {
+  private initializeChats(parentContext: string) {
+    // Initialize main chat for parent prompt
     this.chat = this.model.startChat({
       history: [],
       generationConfig: {
         maxOutputTokens: 8192,
       },
+    });
+
+    // Initialize separate chats for each prompt with shared context
+    this.prompts.forEach((_, promptName) => {
+      const model = this.models.get(promptName);
+      if (model) {
+        const chat = model.startChat({
+          history: [{ role: 'user', parts: [{ text: parentContext }] }],
+          generationConfig: {
+            maxOutputTokens: 8192,
+          },
+        });
+        this.chats.set(promptName, chat);
+      }
     });
   }
 
@@ -160,7 +141,7 @@ export class GeminiService {
   clearConversationHistory() {
     this.conversationHistory = [];
     this.promptResponses = [];
-    this.initializeChat();
+    this.initializeChats('');  // Initialize with empty context
   }
 
   private async retryableFirestoreOperation<T>(
@@ -191,17 +172,20 @@ export class GeminiService {
   }
 
   // Modify the setDoc calls to use the retry logic
-  private async safeSetDoc(docRef: any, data: any): Promise<void> {
+  private async safeSetDoc(
+    docRef: DocumentReference,
+    data: Record<string, unknown>
+  ): Promise<void> {
     return this.retryableFirestoreOperation(async () => {
       try {
-        const shouldMerge = data._merge;
+        const shouldMerge = '_merge' in data;
         delete data._merge; // Remove our internal flag
         
-        const options: SetOptions | undefined = shouldMerge ? { merge: true } : undefined;
+        const options: SetOptions = shouldMerge ? { merge: true } : { merge: false };
         await setDoc(docRef, {
           ...data,
           lastAttempt: new Date().toISOString()
-        }, options as SetOptions); // Cast to SetOptions since we know undefined is not allowed
+        }, options);
       } catch (error) {
         if (error instanceof Error && error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
           console.error(`
@@ -222,28 +206,242 @@ Please try:
     }, 3);
   }
 
+  private async retryableGeminiOperation<T>(
+    operation: () => Promise<T>,
+    maxRetries = 3,
+    initialDelayMs = 2000
+  ): Promise<T> {
+    let lastError: Error | null = null;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        // Check if it's a model overload error or service unavailable
+        if (lastError.message.includes('503') || 
+            lastError.message.includes('overloaded') || 
+            lastError.message.includes('Service Unavailable')) {
+          const delayMs = initialDelayMs * Math.pow(2, attempt - 1); // Exponential backoff
+          const maxDelay = 10000; // Cap at 10 seconds
+          const actualDelay = Math.min(delayMs, maxDelay);
+          
+          console.warn(`⚠️ Gemini model overloaded (attempt ${attempt}/${maxRetries}). Waiting ${actualDelay}ms before retry...`);
+          
+          if (attempt < maxRetries) {
+            await new Promise(resolve => setTimeout(resolve, actualDelay));
+            continue;
+          }
+        }
+        
+        // If we've exhausted retries or it's not a retryable error, throw
+        if (attempt === maxRetries) {
+          console.error(`❌ Failed after ${maxRetries} attempts:`, lastError);
+          throw new Error(`Operation failed after ${maxRetries} retries: ${lastError.message}`);
+        }
+        throw lastError;
+      }
+    }
+    
+    throw lastError || new Error('Operation failed after retries');
+  }
+
+  private async processParentContext(parentResult: string): Promise<string> {
+    try {
+      // Try to parse any JSON content from the response
+      const jsonMatch = parentResult.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        const cleanedJson = this.cleanJsonText(jsonMatch[0]);
+        // Validate the JSON structure
+        const parsed = JSON.parse(cleanedJson);
+        return JSON.stringify(parsed);
+      }
+      
+      console.warn("Could not find valid JSON in parent context response");
+      return JSON.stringify({
+        documentType: "",
+        policyDetails: {
+          name: "",
+          type: "",
+          provider: "",
+          category: ""
+        },
+        keyFeatures: [],
+        mainCoverages: [],
+        importantExclusions: [],
+        waitingPeriods: {
+          initial: "",
+          preExisting: "",
+          specificDiseases: ""
+        },
+        sumInsuredOptions: []
+      });
+    } catch (error) {
+      console.error("Error processing parent context:", error);
+      return JSON.stringify({
+        documentType: "",
+        policyDetails: {
+          name: "",
+          type: "",
+          provider: "",
+          category: ""
+        },
+        keyFeatures: [],
+        mainCoverages: [],
+        importantExclusions: [],
+        waitingPeriods: {
+          initial: "",
+          preExisting: "",
+          specificDiseases: ""
+        },
+        sumInsuredOptions: []
+      });
+    }
+  }
+
+  private cleanJsonText(text: string): string {
+    try {
+      // First extract JSON content if wrapped in markdown code blocks
+      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) || text.match(/\{[\s\S]*\}/);
+      const jsonContent = jsonMatch ? (jsonMatch[1] || jsonMatch[0]).trim() : text.trim();
+
+      // Handle nested JSON strings
+      if (jsonContent.includes('\\"')) {
+        try {
+          // Try parsing as a nested JSON string
+          const unescaped = JSON.parse(`"${jsonContent.replace(/^"|"$/g, '')}"`);
+          return unescaped;
+        } catch {
+          // If unescaping fails, continue with normal cleaning
+          console.warn("Failed to parse nested JSON, continuing with normal cleaning");
+        }
+      }
+
+      // Remove any text before first { and after last }
+      let cleanedText = jsonContent.replace(/^[^{]*({[\s\S]*})[^}]*$/, '$1').trim();
+
+      // Fix common JSON syntax issues
+      cleanedText = cleanedText
+        // Handle escaped quotes properly
+        .replace(/\\\\"/g, '\\"')  // Fix double-escaped quotes first
+        .replace(/\\"/g, '"')      // Then handle single-escaped quotes
+        .replace(/\\\\/g, '\\')    // Fix double-escaped backslashes
+        // Fix property names - ensure they are properly quoted
+        .replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1"$2":')
+        // Fix string values - ensure proper quoting
+        .replace(/:\s*'([^']*?)'/g, ':"$1"')
+        .replace(/:\s*(?!")([\w-]+)(\s*[,}])/g, ':"$1"$2')
+        // Remove trailing commas
+        .replace(/,(\s*[}\]])/g, '$1')
+        // Fix special values
+        .replace(/:\s*undefined\s*([,}])/g, ':null$1')
+        .replace(/:\s*NaN\s*([,}])/g, ':null$1')
+        .replace(/:\s*Infinity\s*([,}])/g, ':null$1')
+        // Fix newlines in strings
+        .replace(/(?<!\\)\\n/g, '\\n')
+        // Normalize whitespace
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Try parsing and re-stringifying to validate and normalize
+      try {
+        const parsed = JSON.parse(cleanedText);
+        return JSON.stringify(parsed);
+      } catch {
+        // If parsing fails, try wrapping in an object
+        try {
+          const wrapped = `{"content":${cleanedText}}`;
+          const parsed = JSON.parse(wrapped);
+          return JSON.stringify(parsed.content);
+        } catch {
+          // If both attempts fail, return the cleaned text
+          console.warn("Failed to parse JSON after cleaning");
+          return cleanedText;
+        }
+      }
+    } catch (error) {
+      console.warn("JSON cleaning failed:", error);
+      // Return the original text if cleaning fails
+      return text;
+    }
+  }
+
+  private async safeParseJSON(text: string, promptName: string): Promise<PromptProcessingResult> {
+    try {
+      // Clean and normalize the JSON text
+      const cleanedText = this.cleanJsonText(text);
+      
+      // Try parsing the cleaned JSON directly
+      try {
+        const parsed = JSON.parse(cleanedText);
+        return {
+          promptName,
+          content: parsed,
+          timestamp: new Date()
+        };
+      } catch {
+        // If direct parsing fails, try wrapping in an object with the prompt name
+        try {
+          // Ensure the content is a valid JSON object
+          const wrappedContent = cleanedText.trim().startsWith('{') 
+            ? `{"${promptName}":${cleanedText}}`
+            : `{"${promptName}":{"content":${cleanedText}}}`;
+            
+          const parsed = JSON.parse(wrappedContent);
+          return {
+            promptName,
+            content: parsed[promptName],
+            timestamp: new Date()
+          };
+        } catch {
+          // If both parsing attempts fail, store the cleaned text with error info
+          return {
+            promptName,
+            content: {
+              rawContent: cleanedText,
+              parsingError: "Failed to parse JSON content",
+              attemptedParse: true
+            },
+            error: "JSON parsing failed",
+            timestamp: new Date()
+          };
+        }
+      }
+    } catch (error) {
+      // Handle any unexpected errors during the entire process
+      console.error(`Error processing JSON for ${promptName}:`, error);
+      return {
+        promptName,
+        content: {
+          rawContent: text,
+          parsingError: error instanceof Error ? error.message : "Unknown error",
+          attemptedParse: true
+        },
+        error: error instanceof Error ? error.message : "Unknown error",
+        timestamp: new Date()
+      };
+    }
+  }
+
   async analyzeInsuranceDocuments(
     files: File[], 
     userEmail: string, 
     policyIndex: number = 1
   ): Promise<AnalysisResult> {
     try {
-      // Wait for prompts to be loaded
+      // Wait for service initialization
       await this.promptLoadingPromise;
       
-      if (!this.parentPrompt) {
-        throw new Error("Parent prompt not loaded");
+      if (!this.parentPrompt || !this.chat) {
+        throw new Error("Service not properly initialized");
       }
 
-      // Always start a fresh chat for new document analysis
-      this.initializeChat();
+      // Reset state for new analysis
+      this.conversationHistory = [];
       this.promptResponses = [];
-      
-      if (!this.chat) {
-        throw new Error("Failed to initialize chat session");
-      }
 
-      // Convert all files to base64 and prepare them for analysis
+      // Convert files to base64 for Gemini
       const fileContents = await Promise.all(files.map(async file => ({
         inlineData: {
           data: await this.fileToBase64(file),
@@ -262,19 +460,35 @@ Please try:
       });
 
       console.log("Starting document analysis with Gemini AI...");
-      // First send the parent prompt to analyze the documents
-      const result = await this.chat.sendMessage([...fileContents, { text: this.parentPrompt }]);
-      await result.response;
-      console.log("✅ Initial document analysis complete with parent prompt");
       
-      // Create the path structure for storage once
+      // Process parent prompt with enhanced context extraction
+      const parentResult = await this.retryableGeminiOperation(async () => {
+        const response = await this.chat!.sendMessage([
+          ...fileContents,
+          { text: `Please analyze these insurance documents and provide a comprehensive summary including:
+1. Document type and purpose
+2. Policy name and provider
+3. Key features and benefits
+4. Main coverages
+5. Important exclusions and limitations
+6. Any special conditions or requirements
+
+${this.parentPrompt!}` }
+        ]);
+        return response.response;
+      });
+      
+      const parentContext = await this.processParentContext(await parentResult.text());
+      console.log("✅ Initial document analysis complete with parent prompt");
+      console.log("Parent Context:", parentContext);
+
+      // Create the path structure for storage
       const sanitizedEmail = userEmail.replace(/\./g, ',');
-      // Create collections and documents path segments
       const userDoc = `users/${sanitizedEmail}`;
       const policyDoc = `policies/policy${policyIndex}`;
       console.log(`Storage path: ${userDoc}/${policyDoc}`);
       
-      // Update summary document with retry
+      // Initialize summary document
       try {
         const summaryDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', '_summary');
         await this.safeSetDoc(summaryDocRef, {
@@ -282,117 +496,81 @@ Please try:
           promptNames: Array.from(this.prompts.keys()),
           startTime: new Date().toISOString(),
           userEmail: userEmail,
-          status: "in_progress"
+          status: "in_progress",
+          parentContext: JSON.parse(parentContext) // Parse the parent context before storing
         });
         console.log("✅ Created summary document to initialize path");
       } catch (initError) {
         console.error("❌ Failed to initialize storage path:", initError);
       }
+
+      // Process all specialized prompts in parallel with context
+      console.log(`Processing ${this.prompts.size} specialized prompts in parallel...`);
       
-      // Store parent analysis (optional)
-      try {
-        // Create the path structure for storage
-        const parentDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', 'parent_analysis');
-        
-        await setDoc(parentDocRef, {
-          status: "completed",
-          timestamp: new Date().toISOString(),
-          files: fileNames
-        });
-        console.log("✅ Stored parent analysis completion status");
-      } catch (parentStoreError) {
-        console.error("❌ Failed to store parent analysis status:", parentStoreError);
-        // Continue anyway - this is just metadata
-      }
-      
-      // Process each prompt and store responses immediately
-      const allResponses: FirestoreData = {};
-      
-      // Log and show processing progress
-      console.log(`Processing ${this.prompts.size} specialized prompts sequentially...`);
-      
-      for (const [promptName, promptText] of this.prompts.entries()) {
-        try {
-          console.log(`Sending prompt: ${promptName}`);
-          
-          // Send the prompt to the chat
-          const promptResult = await this.chat.sendMessage(promptText);
-          const promptResponse = await promptResult.response;
-          let responseText = promptResponse.text();
-          
-          // Remove any markdown formatting if present
-          responseText = responseText.replace(/```json\n?|\n?```/g, '');
-          
+      const promptProcessingPromises = Array.from(this.prompts.entries()).map(
+        async ([promptName, promptText]) => {
           try {
-            const parsedResponse = await this.safeParseJSON(responseText, promptName);
-            // Store the response in memory
-            allResponses[promptName] = {
-              content: parsedResponse,
-              timestamp: new Date()
-            };
+            console.log(`Starting prompt: ${promptName}`);
             
-            // Add to prompt responses array
-            this.promptResponses.push({
-              promptName,
-              response: JSON.stringify(parsedResponse, null, 2),
-              timestamp: new Date()
+            const chat = this.chats.get(promptName);
+            if (!chat) {
+              throw new Error(`Chat session not found for prompt: ${promptName}`);
+            }
+
+            // Send the prompt with context and files
+            const promptResult = await this.retryableGeminiOperation(async () => {
+              const fullPrompt = `
+Context from document analysis:
+${parentContext}
+
+Based on the above context and the provided documents, ${promptText}
+
+Please ensure your response:
+1. Is in valid JSON format
+2. Includes all relevant information from the documents
+3. Follows the exact structure specified in the prompt
+4. Uses null or empty arrays/strings if information is not available
+`;
+              const response = await chat.sendMessage([
+                ...fileContents,
+                { text: fullPrompt }
+              ]);
+              return response.response;
             });
-            
-            // Immediately store this prompt response in Firestore
-            const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
-            await this.safeSetDoc(promptDocRef, {
-              content: parsedResponse,
-              timestamp: new Date().toISOString()
-            });
-            console.log(`✅ Successfully stored prompt: ${promptName} immediately after processing`);
+
+            const result = await this.processPromptResponse(promptName, await promptResult.text(), userDoc, policyIndex);
+            return result;
           } catch (error) {
-            console.error(`❌ Error processing ${promptName}:`, error);
-            // Store the error state
+            console.error(`❌ Error processing prompt ${promptName}:`, error);
+            
+            // Store error state in Firestore
             const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
             await this.safeSetDoc(promptDocRef, {
               error: error instanceof Error ? error.message : 'Unknown error',
-              timestamp: new Date().toISOString()
-            });
-            console.log(`✅ Successfully stored error for prompt: ${promptName}`);
-          }
-        } catch (promptError) {
-          console.error(`❌ Error processing prompt ${promptName}:`, promptError);
-          allResponses[promptName] = { 
-            error: promptError instanceof Error ? promptError.message : "Unknown error",
-            timestamp: new Date()
-          };
-          
-          this.promptResponses.push({
-            promptName,
-            response: JSON.stringify({ error: promptError instanceof Error ? promptError.message : "Unknown error" }, null, 2),
-            timestamp: new Date()
-          });
-          
-          // Store the processing error in Firestore
-          try {
-            const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
-            await this.safeSetDoc(promptDocRef, {
-              error: promptError instanceof Error ? promptError.message : "Unknown error",
               timestamp: new Date().toISOString(),
-              storedAt: new Date().toISOString(),
-              prompt_name: promptName
+              status: 'error'
             });
-            console.log(`✅ Successfully stored processing error for prompt: ${promptName}`);
-          } catch (processingErrorStore) {
-            console.error(`❌ Failed to store processing error for ${promptName}:`, processingErrorStore);
+            
+            return {
+              promptName,
+              error: error instanceof Error ? error.message : "Unknown error",
+              content: null,
+              timestamp: new Date()
+            } as PromptProcessingResult;
           }
         }
-      }
+      );
+
+      // Wait for all prompts to complete
+      const results = await Promise.allSettled(promptProcessingPromises);
       
-      console.log("All prompts processed successfully!");
-      console.log(`Total prompts processed: ${this.promptResponses.length}`);
+      console.log("All prompts processed!");
+      console.log(`Total prompts processed: ${results.length}`);
       
-      // Update summary at the end
+      // Update summary document
       try {
         const summaryDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', '_summary');
         await this.safeSetDoc(summaryDocRef, {
-          totalPrompts: this.promptResponses.length,
-          promptNames: this.promptResponses.map(pr => pr.promptName),
           completedAt: new Date().toISOString(),
           status: "completed",
           _merge: true
@@ -401,8 +579,17 @@ Please try:
       } catch (summaryUpdateError) {
         console.error("❌ Failed to update summary:", summaryUpdateError);
       }
+
+      // Process and return results
+      const processedResults = await this.processPromptResults(results);
+      console.log('Final processed results:', processedResults);
       
-      return { content: JSON.stringify(allResponses, null, 2) };
+      return { 
+        content: JSON.stringify({
+          parentContext,
+          results: processedResults
+        }, null, 2)
+      };
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An error occurred during analysis';
       console.error('Error analyzing documents:', error);
@@ -466,36 +653,91 @@ Please try:
     });
   }
 
-  private async safeParseJSON(text: string, promptName: string): Promise<any> {
+  private async processPromptResponse(
+    promptName: string,
+    responseText: string,
+    userDoc: string,
+    policyIndex: number
+  ): Promise<PromptProcessingResult> {
     try {
-      // First try direct parsing
-      return JSON.parse(text);
-    } catch (error) {
-      console.warn(`Initial JSON parse failed for ${promptName}, attempting cleanup...`);
-      
-      try {
-        // Try to clean up common JSON issues
-        let cleanedText = text
-          // Remove any trailing commas in arrays/objects
-          .replace(/,(\s*[\]}])/g, '$1')
-          // Fix any unclosed arrays/objects
-          .replace(/\[\s*$/, '[]')
-          .replace(/\{\s*$/, '{}')
-          // Remove any trailing/leading non-JSON content
-          .replace(/^[^{[]+/, '')
-          .replace(/[^\]}]+$/, '');
+      // Log the raw response for debugging
+      console.log(`Raw response for ${promptName}:`, responseText);
 
-        return JSON.parse(cleanedText);
-      } catch (error) {
-        const cleanupError = error as Error;
-        console.error(`Failed to parse JSON even after cleanup for ${promptName}:`, cleanupError);
-        // Return a structured error response
-        return {
-          error: `Failed to parse response: ${cleanupError.message}`,
-          rawContent: text
-        };
+      const parsedResponse = await this.safeParseJSON(responseText, promptName);
+      
+      // Validate the parsed response
+      if (!parsedResponse || (!parsedResponse.content && !parsedResponse.error)) {
+        throw new Error('Invalid response structure');
       }
+
+      // Store the response in memory with full content
+      this.promptResponses.push({
+        promptName,
+        response: responseText, // Store raw response text
+        timestamp: new Date()
+      });
+      
+      // Store in Firestore with proper structure
+      const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
+      await this.safeSetDoc(promptDocRef, {
+        content: parsedResponse.content || null,
+        error: parsedResponse.error || null,
+        rawResponse: responseText,
+        timestamp: new Date().toISOString(),
+        status: parsedResponse.error ? 'error' : 'success'
+      });
+
+      console.log(`✅ Successfully processed and stored prompt: ${promptName}`);
+      
+      return {
+        promptName,
+        content: parsedResponse.content,
+        error: parsedResponse.error,
+        timestamp: new Date()
+      };
+    } catch (error) {
+      console.error(`Error processing prompt ${promptName}:`, error);
+      
+      // Store error state in Firestore
+      const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
+      await this.safeSetDoc(promptDocRef, {
+        error: error instanceof Error ? error.message : 'Unknown error',
+        rawResponse: responseText,
+        timestamp: new Date().toISOString(),
+        status: 'error'
+      });
+
+      return {
+        promptName,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        content: null,
+        timestamp: new Date()
+      };
     }
+  }
+
+  private async processPromptResults(results: PromiseSettledResult<PromptProcessingResult>[]): Promise<Record<string, PromptProcessingResult>> {
+    const processedResults = results.reduce((acc, result) => {
+      if (result.status === 'fulfilled') {
+        const promptResult = result.value;
+        // Ensure we're storing the full result including any error information
+        acc[promptResult.promptName] = {
+          promptName: promptResult.promptName,
+          content: promptResult.content,
+          error: promptResult.error,
+          timestamp: promptResult.timestamp
+        };
+      } else {
+        // Handle rejected promises
+        console.error('Promise rejected:', result.reason);
+      }
+      return acc;
+    }, {} as Record<string, PromptProcessingResult>);
+
+    // Log the final processed results for debugging
+    console.log('Final processed results:', processedResults);
+    
+    return processedResults;
   }
 
   async testFirestoreConnection(userEmail: string): Promise<{ success: boolean; message: string }> {

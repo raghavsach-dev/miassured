@@ -71,57 +71,58 @@ INSTRUCTIONS:
    - Provide exact amounts, percentages, conditions, and limitations as specified
    - Distinguish between optional benefits and standard/default coverages
 
-After completing your analysis, provide your findings in the following standardized JSON format ONLY:
+After completing your analysis, provide your findings in the following standardized JSON format ONLY. Ensure all string values are properly escaped, especially for newlines and quotes:
 
 {
   "optional_addon_benefits": [
     {
-      "benefit_name": "",
-      "benefit_type": "",
-      "benefit_summary": "",
-      "purpose": "",
+      "benefit_name": "string",
+      "benefit_type": "string",
+      "benefit_summary": "string",
+      "purpose": "string",
       "coverage_details": {
-        "coverage_amount": "",
-        "coverage_type": "",
+        "coverage_amount": "string",
+        "coverage_type": "string",
         "sub_limits": {},
-        "annual_limits": "",
-        "specific_coverages": []
+        "annual_limits": "string",
+        "specific_coverages": ["string"],
+        "enhancements": "string"
       },
       "waiting_period": {
-        "duration": "",
-        "differences_from_standard": "",
-        "waiver_conditions": [],
+        "duration": "string",
+        "differences_from_standard": "string",
+        "waiver_conditions": ["string"],
         "condition_specific_periods": {},
-        "immediate_coverage_components": []
+        "immediate_coverage_components": ["string"]
       },
       "restrictions": {
-        "exclusions": [],
-        "conditions": [],
-        "geographical_limitations": [],
-        "time_restrictions": [],
-        "frequency_limitations": "",
-        "pre_authorization_requirements": []
+        "exclusions": ["string"],
+        "conditions": ["string"],
+        "geographical_limitations": ["string"],
+        "time_restrictions": ["string"],
+        "frequency_limitations": "string",
+        "pre_authorization_requirements": ["string"]
       },
       "premium_impact": {
-        "additional_premium": "",
-        "variation_factors": [],
-        "available_discounts": [],
-        "overall_impact": "",
-        "premium_nature": ""
+        "additional_premium": "string",
+        "variation_factors": ["string"],
+        "available_discounts": ["string"],
+        "overall_impact": "string",
+        "premium_nature": "string"
       },
       "claim_process": {
-        "specific_procedures": [],
-        "additional_documentation": [],
-        "settlement_procedures": "",
-        "third_party_administrators": [],
-        "intimation_timeframes": ""
+        "specific_procedures": ["string"],
+        "additional_documentation": ["string"],
+        "settlement_procedures": "string",
+        "third_party_administrators": ["string"],
+        "intimation_timeframes": "string"
       }
     }
   ],
-  "combination_restrictions": [],
+  "combination_restrictions": ["string"],
   "eligibility_criteria": {}
 }
 
 Include multiple benefit objects in the array, one for each optional or add-on benefit found in the policy. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings or empty arrays for their properties.
 
-DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. 
+DO NOT include any text outside of this JSON structure. Ensure the JSON is valid and properly formatted. Avoid using newlines within string values - instead use spaces or semicolons to separate items. 
