@@ -1,0 +1,768 @@
+{
+  "benefits_with_sublimits": [
+    {
+      "benefit_name": "",
+      "benefit_summary": "",
+      "purpose": "",
+      "sublimit_details": {
+        "sublimit_amount": "",
+        "sublimit_type": "",
+        "sublimit_period": "",
+        "comparison_to_sum_insured": "",
+        "enhancement_options": [],
+        "variant_specific_differences": {}
+      },
+      "coverage": {
+        "covered_items": [],
+        "exclusions": [],
+        "additional_limitations": [],
+        "documentation_requirements": [],
+        "available_enhancements": []
+      },
+      "waiting_period": {
+        "duration": "",
+        "differences_from_standard": "",
+        "waiver_conditions": [],
+        "condition_specific_periods": {},
+        "immediate_coverage_components": []
+      },
+      "conditions_restrictions": {
+        "qualifying_conditions": [],
+        "frequency_restrictions": "",
+        "geographical_limitations": [],
+        "network_restrictions": "",
+        "pre_authorization_requirements": "",
+        "post_claim_implications": []
+      },
+      "benefit_type": {
+        "category": "",
+        "additional_premium": "",
+        "policyholder_choices": [],
+        "variant_availability": ""
+      }
+    }
+  ],
+  "impact_on_overall_coverage": "",
+  "sublimit_disclosure_requirements": []
+}
+{
+  "exclusions_with_waiting_periods": {
+    "initial_waiting_period": {
+      "duration": "",
+      "excluded_expenses": [],
+      "covered_expenses": [],
+      "conditions": [],
+      "exceptions": [],
+      "renewal_applicability": ""
+    },
+    "pre_existing_diseases_waiting_period": {
+      "duration": "",
+      "definition": "",
+      "specific_conditions": [
+        {
+          "condition_name": "",
+          "specific_waiting_period": "",
+          "specific_conditions": []
+        }
+      ],
+      "disclosure_requirements": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "specified_diseases_procedures_waiting_period": {
+      "duration": "",
+      "included_diseases_procedures": [],
+      "partial_coverage_details": [],
+      "post_waiting_period_conditions": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "personal_waiting_period": {
+      "determination_criteria": [],
+      "triggering_circumstances": [],
+      "common_conditions": [],
+      "duration_determination_process": "",
+      "appeals_process": "",
+      "difference_from_standard_periods": []
+    },
+    "maternity_waiting_period": {
+      "duration": "",
+      "covered_expenses": [],
+      "excluded_expenses": [],
+      "conditions": [],
+      "variant_specific_differences": {},
+      "applicability_to_complications": ""
+    }
+  }
+}
+{
+  "hospitalization_expense_coverage": {
+    "in_patient_care": {
+      "coverage_amount": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "sub_limits": []
+    },
+    "pre_hospitalization_expenses": {
+      "coverage_amount": "",
+      "time_period": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "post_hospitalization_expenses": {
+      "coverage_amount": "",
+      "time_period": "",
+      "expenses_covered": [],
+      "expenses_not_covered": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "room_rent_eligibility": {
+      "limit_type": "",
+      "limit_value": "",
+      "proportionate_deduction": "",
+      "variant_specific_differences": {},
+      "conditions": [],
+      "exceptions": []
+    },
+    "icu_rent_capping": {
+      "limit_type": "",
+      "limit_value": "",
+      "proportionate_deduction": "",
+      "variant_specific_differences": {},
+      "conditions": [],
+      "exceptions": []
+    },
+    "mandatory_copayment": {
+      "percentage": "",
+      "applicability": [],
+      "exemptions": [],
+      "variant_specific_differences": {},
+      "waiver_conditions": []
+    },
+    "domiciliary_hospitalization": {
+      "coverage_amount": "",
+      "covered_conditions": [],
+      "excluded_expenses": [],
+      "conditions": [],
+      "documentation_requirements": []
+    },
+    "road_ambulance": {
+      "coverage_amount": "",
+      "coverage_basis": "",
+      "coverage_conditions": [],
+      "exclusions": [],
+      "network_restrictions": []
+    },
+    "air_ambulance": {
+      "coverage_amount": "",
+      "coverage_basis": "",
+      "coverage_conditions": [],
+      "geographical_restrictions": [],
+      "pre_authorization_requirements": []
+    },
+    "non_medical_items": {
+      "covered_items": [],
+      "limits": {},
+      "excluded_items": [],
+      "coverage_conditions": [],
+      "variant_specific_differences": {}
+    }
+  }
+}
+{
+  "maternity_features": {
+    "maternity_coverage": {
+      "coverage_amount": "",
+      "coverage_type": "",
+      "delivery_type_sub_limits": {
+        "normal_delivery": "",
+        "cesarean_delivery": ""
+      },
+      "waiting_period": "",
+      "pre_post_natal_coverage": {
+        "pre_natal": [],
+        "post_natal": []
+      },
+      "pregnancy_complications_covered": [],
+      "network_restrictions": "",
+      "specific_exclusions": [],
+      "premium_requirement": "",
+      "relationship_requirements": "",
+      "age_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "newborn_baby_cover": {
+      "coverage_start": "",
+      "coverage_amount": "",
+      "specific_treatment_sub_limits": {},
+      "waiting_period": "",
+      "congenital_conditions_covered": [],
+      "vaccination_coverage": "",
+      "specific_exclusions": [],
+      "addition_process": "",
+      "addition_timeframe": "",
+      "medical_requirements": "",
+      "premium_requirement": "",
+      "variant_differences": {}
+    },
+    "ivf_coverage": {
+      "coverage_amount": "",
+      "covered_treatments": [],
+      "treatment_sub_limits": {},
+      "waiting_period": "",
+      "specific_exclusions": [],
+      "maximum_cycles": "",
+      "age_restrictions": "",
+      "documentation_requirements": [],
+      "premium_requirement": "",
+      "relationship_requirements": "",
+      "network_restrictions": "",
+      "variant_differences": {}
+    },
+    "maternity_related_conditions": {
+      "is_dependent_on_policy_type": "",
+      "family_size_requirements": "",
+      "continuation_for_renewals": ""
+    }
+  }
+}
+{
+  "non_treatment_benefits": {
+    "daily_hospitalization_cash": {
+      "benefit_amount": "",
+      "maximum_days_per_hospitalization": "",
+      "annual_day_limit": "",
+      "icu_vs_normal_amounts": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "documentation_requirements": []
+    },
+    "shared_accommodation_benefit": {
+      "benefit_amount": "",
+      "trigger_conditions": [],
+      "calculation_method": "",
+      "frequency_limit": "",
+      "exclusions": [],
+      "hospital_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": []
+    },
+    "opd_treatment": {
+      "coverage_amount": "",
+      "covered_services": [],
+      "sub_limits": {},
+      "annual_limit": "",
+      "exclusions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "documentation_requirements": []
+    },
+    "annual_health_checkup": {
+      "coverage_details": "",
+      "included_tests": [],
+      "demographic_specific_packages": {},
+      "waiting_period": "",
+      "eligibility_conditions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "member_coverage": "",
+      "frequency": ""
+    },
+    "doctor_consultation": {
+      "consultation_types": [],
+      "consultation_modes": [],
+      "consultation_limit": "",
+      "specialty_limits": {},
+      "exclusions": [],
+      "provider_restrictions": "",
+      "premium_requirement": "",
+      "claim_conditions": [],
+      "waiting_period": ""
+    }
+  }
+}
+{
+  "optional_addon_benefits": [
+    {
+      "benefit_name": "string",
+      "benefit_type": "string",
+      "benefit_summary": "string",
+      "purpose": "string",
+      "coverage_details": {
+        "coverage_amount": "string",
+        "coverage_type": "string",
+        "sub_limits": {},
+        "annual_limits": "string",
+        "specific_coverages": ["string"],
+        "enhancements": "string"
+      },
+      "waiting_period": {
+        "duration": "string",
+        "differences_from_standard": "string",
+        "waiver_conditions": ["string"],
+        "condition_specific_periods": {},
+        "immediate_coverage_components": ["string"]
+      },
+      "restrictions": {
+        "exclusions": ["string"],
+        "conditions": ["string"],
+        "geographical_limitations": ["string"],
+        "time_restrictions": ["string"],
+        "frequency_limitations": "string",
+        "pre_authorization_requirements": ["string"]
+      },
+      "premium_impact": {
+        "additional_premium": "string",
+        "variation_factors": ["string"],
+        "available_discounts": ["string"],
+        "overall_impact": "string",
+        "premium_nature": "string"
+      },
+      "claim_process": {
+        "specific_procedures": ["string"],
+        "additional_documentation": ["string"],
+        "settlement_procedures": "string",
+        "third_party_administrators": ["string"],
+        "intimation_timeframes": "string"
+      }
+    }
+  ],
+  "combination_restrictions": ["string"],
+  "eligibility_criteria": {}
+}
+{
+  "documentType": "string",
+  "policyDetails": {
+    "name": "string",
+    "type": "string",
+    "provider": "string",
+    "category": "string"
+  },
+  "keyFeatures": [
+    "string"
+  ],
+  "mainCoverages": [
+    "string"
+  ],
+  "importantExclusions": [
+    "string"
+  ],
+  "waitingPeriods": {
+    "initial": "string",
+    "preExisting": "string",
+    "specificDiseases": "string"
+  },
+  "sumInsuredOptions": [
+    "string"
+  ]
+}
+{
+  "permanent_exclusions": {
+    "standard_permanent_exclusions": [
+      {
+        "exclusion_code": "string",
+        "exclusion_description": "string",
+        "clarifications": ["string"],
+        "exceptions": ["string"],
+        "modifications_from_standard": "string",
+        "partial_waiver_conditions": ["string"]
+      }
+    ],
+    "pre_existing_diseases_permanent_exclusions": {
+      "permanently_excluded_peds": ["string"],
+      "difference_from_waiting_period_peds": ["string"],
+      "reclassification_conditions": ["string"],
+      "disclosure_requirements": ["string"],
+      "appeals_process": "string",
+      "variant_specific_differences": {}
+    },
+    "non_standard_permanent_exclusions": [
+      {
+        "exclusion_name": "string",
+        "exclusion_description": "string",
+        "specific_items_excluded": ["string"],
+        "activating_conditions": ["string"],
+        "documentation_requirements": ["string"],
+        "impact_on_benefits": "string"
+      }
+    ],
+    "categorized_exclusions": {
+      "treatment_specific": ["string"],
+      "condition_specific": ["string"],
+      "behavior_related": ["string"],
+      "time_bound": ["string"],
+      "facility_provider_specific": ["string"],
+      "geography_based": ["string"]
+    }
+  }
+}
+{
+  "policy_design": {
+    "base_sum_insured": {
+      "options": [],
+      "variant_specific_options": {},
+      "conditions": []
+    },
+    "coverage_type": {
+      "types": [],
+      "type_specific_conditions": {}
+    },
+    "age_eligibility": {
+      "adult": {
+        "minimum_age": null,
+        "maximum_age": null
+      },
+      "child": {
+        "minimum_age": null,
+        "maximum_age": null
+      },
+      "conditions": []
+    },
+    "members_allowed": {
+      "individual_policy": {
+        "max_adults": null,
+        "max_children": null
+      },
+      "family_floater": {
+        "max_adults": null,
+        "max_children": null
+      },
+      "conditions": []
+    },
+    "relationships_allowed": {
+      "individual_policy": [],
+      "family_floater": [],
+      "conditions": []
+    },
+    "maximum_renewal_age": {
+      "individual_policy": {
+        "adults": null,
+        "children": null
+      },
+      "family_floater": {
+        "adults": null,
+        "children": null
+      },
+      "conditions": []
+    },
+    "zonal_pricing": {
+      "zones": [],
+      "premium_impact": [],
+      "conditions": []
+    },
+    "member_addition": {
+      "eligible_members": [],
+      "methods": [],
+      "conditions": []
+    },
+    "policy_tenure": {
+      "options": [],
+      "benefits": [],
+      "conditions": []
+    },
+    "premium_payment_cycle": {
+      "options": [],
+      "conditions": []
+    },
+    "pre_policy_medical_checkup": {
+      "required_for": [],
+      "triggering_conditions": [],
+      "exemptions": []
+    },
+    "sum_insured_changes": {
+      "increase_allowed_when": [],
+      "conditions": [],
+      "waiting_periods": []
+    }
+  }
+}
+{
+  "policyholder_obligations": [
+    {
+      "obligation_name": "",
+      "obligation_category": "",
+      "policy_lifecycle_stage": "",
+      "obligation_summary": "",
+      "purpose": "",
+      "insurer_interest": "",
+      "special_considerations": "",
+      "requirements": {
+        "specific_actions": [],
+        "timelines": "",
+        "submission_methods": "",
+        "circumstantial_variations": {},
+        "exceptions": [],
+        "insurer_assistance": ""
+      },
+      "non_compliance_consequences": {
+        "claim_impact": "",
+        "policy_validity_impact": "",
+        "specific_benefit_impacts": [],
+        "financial_penalties": "",
+        "remedial_actions": "",
+        "grace_periods": ""
+      },
+      "mitigation_factors": {
+        "leniency_conditions": [],
+        "insurer_discretion": "",
+        "appeals_process": "",
+        "consequence_reduction_circumstances": [],
+        "regulatory_protections": ""
+      }
+    }
+  ],
+  "general_duty_of_disclosure": "",
+  "overarching_compliance_requirements": [],
+  "variant_specific_obligations": {}
+}
+{
+  "policy_variants": {
+    "variant_list": [],
+    "variant_details": [
+      {
+        "variant_name": "",
+        "variant_description": "",
+        "target_demographic": "",
+        "unique_features": [],
+        "enhanced_features": [
+          {
+            "feature_name": "",
+            "enhancement_details": "",
+            "conditions": []
+          }
+        ],
+        "reduced_features": [
+          {
+            "feature_name": "",
+            "reduction_details": "",
+            "conditions": []
+          }
+        ],
+        "exclusive_features": [
+          {
+            "feature_name": "",
+            "feature_details": "",
+            "conditions": []
+          }
+        ],
+        "bundled_benefits": [],
+        "optional_add_ons": [],
+        "eligibility_criteria": [],
+        "premium_factors": []
+      }
+    ],
+    "variant_comparison": {
+      "common_features": [],
+      "key_differences": [
+        {
+          "feature_name": "",
+          "variant_differences": {}
+        }
+      ]
+    },
+    "variant_switching": {
+      "upgrade_conditions": [],
+      "downgrade_conditions": [],
+      "waiting_periods": [],
+      "implications": []
+    }
+  }
+}
+{
+  "premium_reduction": {
+    "tenure_discount": {
+      "discount_percentages": {},
+      "eligible_tenures": [],
+      "application_method": "",
+      "conditions": [],
+      "limitations": [],
+      "variant_differences": {},
+      "renewal_applicability": "",
+      "impact_on_benefits": []
+    },
+    "network_hospital_restriction": {
+      "discount_percentage": "",
+      "conditions": [],
+      "non_network_impact": "",
+      "emergency_exceptions": [],
+      "geographic_limitations": [],
+      "application_method": "",
+      "variant_applicability": "",
+      "impact_on_claims": []
+    },
+    "room_rent_modification": {
+      "discount_percentages": {},
+      "available_categories": [],
+      "proportionate_deduction_details": "",
+      "conditions": [],
+      "exempt_procedures": [],
+      "variant_differences": {},
+      "renewal_changes": "",
+      "impact_on_benefits": []
+    },
+    "optional_copayment": {
+      "available_percentages": [],
+      "corresponding_discounts": {},
+      "application_method": "",
+      "conditions": [],
+      "exempt_treatments": [],
+      "variant_age_differences": {},
+      "renewal_changes": "",
+      "impact_on_claims": []
+    },
+    "annual_aggregate_deductible": {
+      "available_amounts": [],
+      "corresponding_discounts": {},
+      "accumulation_method": "",
+      "conditions": [],
+      "exempt_claims": [],
+      "variant_differences": {},
+      "renewal_changes": "",
+      "claim_process": ""
+    },
+    "healthy_life_discount": {
+      "discount_percentages": {},
+      "monitored_parameters": [],
+      "tracking_method": "",
+      "conditions": [],
+      "required_programs": [],
+      "assessment_frequency": "",
+      "application_timing": "",
+      "technology_requirements": []
+    },
+    "premium_lock": {
+      "locking_mechanism": "",
+      "age_impact": "",
+      "lock_duration": "",
+      "conditions": [],
+      "voiding_circumstances": [],
+      "modification_impact": "",
+      "additional_aspects": [],
+      "variant_applicability": ""
+    }
+  }
+}
+{
+  "si_enhancement": {
+    "restore_reset_sum_insured": {
+      "feature_name": "",
+      "restoration_mechanism": "",
+      "trigger_conditions": [],
+      "usage_limitations": [],
+      "restoration_amount": "",
+      "frequency_limit": "",
+      "application_scope": "",
+      "premium_requirement": "",
+      "waiting_period": "",
+      "excluded_conditions": []
+    },
+    "no_claim_bonus": {
+      "feature_name": "",
+      "bonus_type": "",
+      "bonus_amount": "",
+      "maximum_accumulation": "",
+      "partial_claim_impact": "",
+      "reduction_conditions": [],
+      "application_scope": "",
+      "variant_differences": {},
+      "application_timing": "",
+      "excluded_conditions": []
+    },
+    "utilization_sequence": {
+      "feature_name": "",
+      "sequence_order": [],
+      "customer_choice_options": [],
+      "condition_specific_sequences": {},
+      "component_restrictions": [],
+      "future_benefit_impact": "",
+      "claim_specific_variations": {},
+      "deductible_copay_application": ""
+    },
+    "additional_enhancement_features": [
+      {
+        "feature_name": "",
+        "description": "",
+        "conditions": [],
+        "premium_impact": ""
+      }
+    ]
+  }
+}
+{
+  "treatment_coverage": {
+    "day_care_treatments": {
+      "coverage_amount": "",
+      "covered_procedures": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "network_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "organ_transplant": {
+      "coverage_amount": "",
+      "covered_organs": [],
+      "donor_expense_coverage": "",
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "network_restrictions": "",
+      "post_transplant_coverage": "",
+      "variant_differences": {}
+    },
+    "modern_treatments": {
+      "coverage_amount": "",
+      "covered_procedures": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "coverage_calculation": "",
+      "network_restrictions": "",
+      "pre_authorization": "",
+      "variant_differences": {}
+    },
+    "alternative_treatments": {
+      "coverage_amount": "",
+      "covered_systems": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "network_restrictions": "",
+      "practitioner_requirements": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "artificial_life_maintenance": {
+      "coverage_amount": "",
+      "covered_situations": [],
+      "time_limits": "",
+      "waiting_period": "",
+      "exclusions": [],
+      "pre_authorization": "",
+      "hospital_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    },
+    "mental_disorders_treatment": {
+      "coverage_amount": "",
+      "covered_conditions": [],
+      "sub_limits": {},
+      "waiting_period": "",
+      "exclusions": [],
+      "outpatient_coverage": "",
+      "provider_restrictions": "",
+      "documentation_requirements": [],
+      "variant_differences": {}
+    }
+  }
+}

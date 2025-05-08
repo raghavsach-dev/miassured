@@ -24,6 +24,7 @@ import {
 import { FiUpload, FiTrash2, FiSearch, FiDatabase } from 'react-icons/fi';
 import { geminiService, AnalysisResult } from '../services/GeminiService';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 interface UploadedFile {
   file: File;
@@ -40,6 +41,7 @@ export const FileUpload = () => {
   const [testResult, setTestResult] = useState<string | null>(null);
   const toast = useToast();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -218,17 +220,9 @@ export const FileUpload = () => {
           isClosable: true,
         });
       } else {
-        const sanitizedEmail = user.email.replace(/\./g, ',');
-        const storagePath = `users/${sanitizedEmail}/policies/policy1/documents/{prompt_responses}`;
-        console.log("Storage Path:", storagePath);
-        setTestResult(`SUCCESS: Analysis data stored at: /${storagePath}`);
-        toast({
-          title: 'Analysis Complete',
-          description: `Successfully analyzed and stored all documents with ${geminiService.getPromptResponses().length} specialized prompts at path /${storagePath}`,
-          status: 'success',
-          duration: 8000,
-          isClosable: true,
-        });
+        // Navigate to results page with the result
+        navigate('/results', { state: { result } });
+        return;
       }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred while analyzing the files';

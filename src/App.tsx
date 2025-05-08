@@ -6,6 +6,7 @@ import Signup from './pages/Signup'
 import { Dashboard } from './pages/Dashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import theme from './theme'
+import Results from './pages/Results'
 
 function App() {
   return (
@@ -22,6 +23,10 @@ function App() {
                   <Dashboard />
                 </ProtectedRoute>
               }
+            />
+            <Route
+              path="/results"
+              element={<Results />}
             />
             <Route path="/" element={<Navigate to="/login" />} />
           </Routes>
