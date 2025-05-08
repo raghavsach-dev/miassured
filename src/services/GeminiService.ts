@@ -302,67 +302,62 @@ Please try:
 
   private cleanJsonText(text: string): string {
     try {
-      // First extract JSON content if wrapped in markdown code blocks
-      const jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/) || text.match(/\{[\s\S]*\}/);
-      const jsonContent = jsonMatch ? (jsonMatch[1] || jsonMatch[0]).trim() : text.trim();
-
-      // Handle nested JSON strings
-      if (jsonContent.includes('\\"')) {
-        try {
-          // Try parsing as a nested JSON string
-          const unescaped = JSON.parse(`"${jsonContent.replace(/^"|"$/g, '')}"`);
-          return unescaped;
-        } catch {
-          // If unescaping fails, continue with normal cleaning
-          console.warn("Failed to parse nested JSON, continuing with normal cleaning");
+      // 1. Extract the largest JSON block (even if incomplete)
+      let jsonMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      let jsonContent = jsonMatch ? jsonMatch[1].trim() : text.trim();
+      if (!jsonMatch) {
+        // Try to find the largest {...} or [...] block
+        const curly = text.lastIndexOf('{');
+        const square = text.lastIndexOf('[');
+        if (curly !== -1 && curly < text.length - 1) {
+          jsonContent = text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1 || undefined);
+        } else if (square !== -1 && square < text.length - 1) {
+          jsonContent = text.slice(text.indexOf('['), text.lastIndexOf(']') + 1 || undefined);
+        } else {
+          jsonContent = text.trim();
         }
       }
 
-      // Remove any text before first { and after last }
-      let cleanedText = jsonContent.replace(/^[^{]*({[\s\S]*})[^}]*$/, '$1').trim();
+      // 2. Remove leading/trailing junk
+      jsonContent = jsonContent.replace(/^[^\[{]*(\[|\{)/, '$1');
+      jsonContent = jsonContent.replace(/(\}|\])[^\]}]*$/, '$1');
 
-      // Fix common JSON syntax issues
-      cleanedText = cleanedText
-        // Handle escaped quotes properly
-        .replace(/\\\\"/g, '\\"')  // Fix double-escaped quotes first
-        .replace(/\\"/g, '"')      // Then handle single-escaped quotes
-        .replace(/\\\\/g, '\\')    // Fix double-escaped backslashes
-        // Fix property names - ensure they are properly quoted
-        .replace(/([{,]\s*)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g, '$1"$2":')
-        // Fix string values - ensure proper quoting
-        .replace(/:\s*'([^']*?)'/g, ':"$1"')
-        .replace(/:\s*(?!")([\w-]+)(\s*[,}])/g, ':"$1"$2')
-        // Remove trailing commas
-        .replace(/,(\s*[}\]])/g, '$1')
-        // Fix special values
-        .replace(/:\s*undefined\s*([,}])/g, ':null$1')
-        .replace(/:\s*NaN\s*([,}])/g, ':null$1')
-        .replace(/:\s*Infinity\s*([,}])/g, ':null$1')
-        // Fix newlines in strings
-        .replace(/(?<!\\)\\n/g, '\\n')
-        // Normalize whitespace
-        .replace(/\s+/g, ' ')
-        .trim();
+      // 3. Try to fix truncated JSON (close open braces/brackets)
+      const openCurly = (jsonContent.match(/\{/g) || []).length;
+      const closeCurly = (jsonContent.match(/\}/g) || []).length;
+      const openSquare = (jsonContent.match(/\[/g) || []).length;
+      const closeSquare = (jsonContent.match(/\]/g) || []).length;
+      let fixed = jsonContent;
+      if (openCurly > closeCurly) fixed += '}'.repeat(openCurly - closeCurly);
+      if (openSquare > closeSquare) fixed += ']'.repeat(openSquare - closeSquare);
 
-      // Try parsing and re-stringifying to validate and normalize
+      // 4. Remove trailing commas (common AI bug)
+      fixed = fixed.replace(/,\s*([}\]])/g, '$1');
+
+      // 5. Try to parse and re-stringify
       try {
-        const parsed = JSON.parse(cleanedText);
+        const parsed = JSON.parse(fixed);
         return JSON.stringify(parsed);
-      } catch {
-        // If parsing fails, try wrapping in an object
-        try {
-          const wrapped = `{"content":${cleanedText}}`;
-          const parsed = JSON.parse(wrapped);
-          return JSON.stringify(parsed.content);
-        } catch {
-          // If both attempts fail, return the cleaned text
-          console.warn("Failed to parse JSON after cleaning");
-          return cleanedText;
+      } catch (e) {
+        // Try to parse as an array or object if possible
+        if (fixed.startsWith('[')) {
+          try {
+            const arr = JSON.parse(fixed + ']'.repeat(openSquare - closeSquare));
+            return JSON.stringify(arr);
+          } catch {}
         }
+        if (fixed.startsWith('{')) {
+          try {
+            const obj = JSON.parse(fixed + '}'.repeat(openCurly - closeCurly));
+            return JSON.stringify(obj);
+          } catch {}
+        }
+        // Fallback: return the best effort cleaned text
+        console.warn('Failed to parse JSON after cleaning');
+        return fixed;
       }
     } catch (error) {
-      console.warn("JSON cleaning failed:", error);
-      // Return the original text if cleaning fails
+      console.warn('JSON cleaning failed:', error);
       return text;
     }
   }
