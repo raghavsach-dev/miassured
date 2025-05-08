@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI, GenerativeModel, ChatSession } from '@google/generative-ai';
 import { db } from '../firebase/config';
-import { doc, setDoc, getDoc, collection } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, SetOptions } from 'firebase/firestore';
 
 // Initialize the Gemini API client
 const genAI = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY || '');
@@ -163,6 +163,65 @@ export class GeminiService {
     this.initializeChat();
   }
 
+  private async retryableFirestoreOperation<T>(
+    operation: () => Promise<T>,
+    maxRetries = 3
+  ): Promise<T> {
+    let lastError: Error | null = null;
+    const delayMs = 1000;
+    
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await operation();
+      } catch (error) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        // Check if it's a client-blocked error
+        if (lastError.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+          console.warn(`⚠️ Firestore connection blocked by client (attempt ${attempt}/${maxRetries}). This may be caused by an ad blocker or security extension.`);
+        }
+        
+        if (attempt < maxRetries) {
+          await new Promise(resolve => setTimeout(resolve, delayMs * attempt));
+        }
+      }
+    }
+    
+    throw lastError || new Error('Operation failed after retries');
+  }
+
+  // Modify the setDoc calls to use the retry logic
+  private async safeSetDoc(docRef: any, data: any): Promise<void> {
+    return this.retryableFirestoreOperation(async () => {
+      try {
+        const shouldMerge = data._merge;
+        delete data._merge; // Remove our internal flag
+        
+        const options: SetOptions | undefined = shouldMerge ? { merge: true } : undefined;
+        await setDoc(docRef, {
+          ...data,
+          lastAttempt: new Date().toISOString()
+        }, options as SetOptions); // Cast to SetOptions since we know undefined is not allowed
+      } catch (error) {
+        if (error instanceof Error && error.message.includes('ERR_BLOCKED_BY_CLIENT')) {
+          console.error(`
+⚠️ Firestore Connection Blocked
+This error is typically caused by:
+1. Ad blockers (like uBlock Origin)
+2. Security extensions
+3. Corporate firewalls
+
+Please try:
+- Disabling ad blockers for this site
+- Adding firestore.googleapis.com to allowed domains
+- Checking network security settings
+          `);
+        }
+        throw error;
+      }
+    }, 3);
+  }
+
   async analyzeInsuranceDocuments(
     files: File[], 
     userEmail: string, 
@@ -215,10 +274,10 @@ export class GeminiService {
       const policyDoc = `policies/policy${policyIndex}`;
       console.log(`Storage path: ${userDoc}/${policyDoc}`);
       
-      // First try to create the parent document to ensure the path exists
+      // Update summary document with retry
       try {
         const summaryDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', '_summary');
-        await setDoc(summaryDocRef, {
+        await this.safeSetDoc(summaryDocRef, {
           totalPrompts: this.prompts.size,
           promptNames: Array.from(this.prompts.keys()),
           startTime: new Date().toISOString(),
@@ -228,7 +287,6 @@ export class GeminiService {
         console.log("✅ Created summary document to initialize path");
       } catch (initError) {
         console.error("❌ Failed to initialize storage path:", initError);
-        // Continue anyway - we'll try individual documents
       }
       
       // Store parent analysis (optional)
@@ -266,67 +324,36 @@ export class GeminiService {
           responseText = responseText.replace(/```json\n?|\n?```/g, '');
           
           try {
-            // Parse JSON response
-            const parsedJson = JSON.parse(responseText);
-            const formattedResponse = JSON.stringify(parsedJson, null, 2);
-            
+            const parsedResponse = await this.safeParseJSON(responseText, promptName);
             // Store the response in memory
             allResponses[promptName] = {
-              content: parsedJson,
+              content: parsedResponse,
               timestamp: new Date()
             };
             
             // Add to prompt responses array
             this.promptResponses.push({
               promptName,
-              response: formattedResponse,
+              response: JSON.stringify(parsedResponse, null, 2),
               timestamp: new Date()
             });
             
             // Immediately store this prompt response in Firestore
-            try {
-              const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
-              await setDoc(promptDocRef, {
-                content: parsedJson,
-                timestamp: new Date().toISOString(),
-                storedAt: new Date().toISOString(),
-                prompt_name: promptName
-              });
-              console.log(`✅ Successfully stored prompt: ${promptName} immediately after processing`);
-            } catch (promptStoreError) {
-              console.error(`❌ Failed to store prompt ${promptName}:`, promptStoreError);
-              // Continue with other prompts - don't stop analysis
-            }
-            
-            console.log(`✅ Successfully processed prompt: ${promptName}`);
-          } catch (jsonError) {
-            console.error(`❌ Error parsing JSON from ${promptName} response:`, jsonError);
-            allResponses[promptName] = { 
-              error: "Invalid JSON response", 
-              rawContent: responseText,
-              timestamp: new Date()
-            };
-            
-            this.promptResponses.push({
-              promptName,
-              response: JSON.stringify({ error: "Invalid JSON response", rawContent: responseText }, null, 2),
-              timestamp: new Date()
+            const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
+            await this.safeSetDoc(promptDocRef, {
+              content: parsedResponse,
+              timestamp: new Date().toISOString()
             });
-            
-            // Still store the error in Firestore
-            try {
-              const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
-              await setDoc(promptDocRef, {
-                error: "Invalid JSON response",
-                rawContent: responseText,
-                timestamp: new Date().toISOString(),
-                storedAt: new Date().toISOString(),
-                prompt_name: promptName
-              });
-              console.log(`✅ Successfully stored error for prompt: ${promptName}`);
-            } catch (errorStoreError) {
-              console.error(`❌ Failed to store error for prompt ${promptName}:`, errorStoreError);
-            }
+            console.log(`✅ Successfully stored prompt: ${promptName} immediately after processing`);
+          } catch (error) {
+            console.error(`❌ Error processing ${promptName}:`, error);
+            // Store the error state
+            const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
+            await this.safeSetDoc(promptDocRef, {
+              error: error instanceof Error ? error.message : 'Unknown error',
+              timestamp: new Date().toISOString()
+            });
+            console.log(`✅ Successfully stored error for prompt: ${promptName}`);
           }
         } catch (promptError) {
           console.error(`❌ Error processing prompt ${promptName}:`, promptError);
@@ -344,7 +371,7 @@ export class GeminiService {
           // Store the processing error in Firestore
           try {
             const promptDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', promptName);
-            await setDoc(promptDocRef, {
+            await this.safeSetDoc(promptDocRef, {
               error: promptError instanceof Error ? promptError.message : "Unknown error",
               timestamp: new Date().toISOString(),
               storedAt: new Date().toISOString(),
@@ -363,12 +390,13 @@ export class GeminiService {
       // Update summary at the end
       try {
         const summaryDocRef = doc(db, userDoc, 'policies', `policy${policyIndex}`, 'documents', '_summary');
-        await setDoc(summaryDocRef, {
+        await this.safeSetDoc(summaryDocRef, {
           totalPrompts: this.promptResponses.length,
           promptNames: this.promptResponses.map(pr => pr.promptName),
           completedAt: new Date().toISOString(),
-          status: "completed"
-        }, { merge: true });
+          status: "completed",
+          _merge: true
+        });
         console.log("✅ Updated summary document with completion status");
       } catch (summaryUpdateError) {
         console.error("❌ Failed to update summary:", summaryUpdateError);
@@ -436,6 +464,38 @@ export class GeminiService {
       reader.onerror = () => reject(reader.error);
       reader.readAsDataURL(file);
     });
+  }
+
+  private async safeParseJSON(text: string, promptName: string): Promise<any> {
+    try {
+      // First try direct parsing
+      return JSON.parse(text);
+    } catch (error) {
+      console.warn(`Initial JSON parse failed for ${promptName}, attempting cleanup...`);
+      
+      try {
+        // Try to clean up common JSON issues
+        let cleanedText = text
+          // Remove any trailing commas in arrays/objects
+          .replace(/,(\s*[\]}])/g, '$1')
+          // Fix any unclosed arrays/objects
+          .replace(/\[\s*$/, '[]')
+          .replace(/\{\s*$/, '{}')
+          // Remove any trailing/leading non-JSON content
+          .replace(/^[^{[]+/, '')
+          .replace(/[^\]}]+$/, '');
+
+        return JSON.parse(cleanedText);
+      } catch (error) {
+        const cleanupError = error as Error;
+        console.error(`Failed to parse JSON even after cleanup for ${promptName}:`, cleanupError);
+        // Return a structured error response
+        return {
+          error: `Failed to parse response: ${cleanupError.message}`,
+          rawContent: text
+        };
+      }
+    }
   }
 
   async testFirestoreConnection(userEmail: string): Promise<{ success: boolean; message: string }> {
