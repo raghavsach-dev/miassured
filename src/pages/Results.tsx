@@ -4,7 +4,8 @@ import {
   List, ListItem, ListIcon, Accordion, AccordionItem, AccordionButton, AccordionPanel, AccordionIcon, 
   Alert, AlertIcon, Button, IconButton, Tooltip, Flex, Tabs, TabList, Tab, TabPanels, TabPanel,
   Grid, GridItem, useColorModeValue, HStack, Tag, Stat, StatLabel, StatNumber, StatHelpText,
-  Link, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Progress, Menu, MenuButton, MenuList, MenuItem
+  Link, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Progress, Menu, MenuButton, MenuList, MenuItem,
+  Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody
 } from '@chakra-ui/react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 import { CheckCircleIcon, WarningIcon, ChatIcon, DownloadIcon, InfoIcon, ExternalLinkIcon, ChevronDownIcon } from '@chakra-ui/icons';
@@ -150,9 +151,12 @@ const Results = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Array<{
+    role: 'user' | 'assistant';
+    content: string;
+    timestamp: Date;
+  }>>([]);
   const contentRef = useRef<HTMLDivElement>(null);
-  
-  // Color mode values
   const bgColor = useColorModeValue('gray.50', 'gray.900');
   const cardBg = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.700');
@@ -162,16 +166,24 @@ const Results = () => {
   // Defensive: parse Gemini result content
   let parsed: any = null;
   let parseError = '';
-  if (!result) {
-    navigate('/dashboard');
-    return null;
-  }
-  try {
-    parsed = typeof result.content === 'string' ? JSON.parse(result.content) : result.content;
-  } catch (e) {
-    parseError = 'Failed to parse Gemini result JSON.';
+  if (result) {
+    try {
+      parsed = typeof result.content === 'string' ? JSON.parse(result.content) : result.content;
+    } catch (e) {
+      parseError = 'Failed to parse Gemini result JSON.';
+    }
   }
 
+  // Use useEffect for navigation to avoid breaking hook order
+  React.useEffect(() => {
+    if (!result) {
+      navigate('/dashboard');
+    }
+  }, [result, navigate]);
+
+  if (!result) {
+    return null;
+  }
   if (parseError) {
     return (
       <Alert status="error" mt={8}>
@@ -387,23 +399,10 @@ const Results = () => {
             </Breadcrumb>
             <Heading size="lg">{policyName}</Heading>
             <HStack spacing={4}>
-              {/* <Text color="gray.600" fontSize="sm">
-                {policyType}
-              </Text> */}
-              {/* <Text color="gray.600" fontSize="sm">
-                •
-              </Text>
-              <Text color="gray.600" fontSize="sm">
-                {policyProvider}
-              </Text> */}
               {policyNumber && (
                 <>
-                  <Text color="gray.600" fontSize="sm">
-                    •
-                  </Text>
-                  <Text color="gray.600" fontSize="sm">
-                    Policy #{policyNumber}
-                  </Text>
+                  <Text color="gray.600" fontSize="sm">•</Text>
+                  <Text color="gray.600" fontSize="sm">Policy #{policyNumber}</Text>
                 </>
               )}
             </HStack>
@@ -441,14 +440,14 @@ const Results = () => {
             >
               Download Report
             </Button>
-          <Tooltip label={isChatOpen ? "Close chat" : "Chat with your document"}>
-            <IconButton
-              aria-label="Toggle chat"
-              icon={<ChatIcon />}
+            <Tooltip label={isChatOpen ? "Close chat" : "Chat with your document"}>
+              <IconButton
+                aria-label="Toggle chat"
+                icon={<ChatIcon />}
                 colorScheme={accentColor}
-              onClick={() => setIsChatOpen(!isChatOpen)}
-            />
-          </Tooltip>
+                onClick={() => setIsChatOpen(!isChatOpen)}
+              />
+            </Tooltip>
           </HStack>
         </Flex>
       </Box>
@@ -457,8 +456,8 @@ const Results = () => {
       <Flex maxW="container.xl" mx="auto" py={6} px={4}>
         {/* Main Analysis Content */}
         <Box 
-          flex="3"
-          pr={isChatOpen ? 6 : 0}
+          width="100%"
+          pr={0}
           overflowY="auto"
           ref={contentRef}
         >
@@ -1642,39 +1641,35 @@ const Results = () => {
           )}
       </Box>
 
-        {/* Chat Interface */}
-      {isChatOpen && (
-          <Box 
-            flex="1" 
-            ml={4} 
-            borderLeft="1px" 
-            borderColor={borderColor} 
-            pl={4}
-            h="calc(100vh - 120px)"
-            bg={cardBg}
-            borderRadius="lg"
-            boxShadow="sm"
-            overflow="hidden"
-          >
+      {/* Chat Drawer */}
+      <Drawer 
+        placement="right" 
+        onClose={() => setIsChatOpen(false)} 
+        isOpen={isChatOpen} 
+        size="md"
+        closeOnOverlayClick={false}
+      >
+        <DrawerOverlay />
+        <DrawerContent>
+          <DrawerCloseButton />
+          <DrawerHeader borderBottomWidth="1px">Chat with your document</DrawerHeader>
+          <DrawerBody p={0} display="flex" flexDirection="column">
             <Box 
-              p={4} 
-              borderBottom="1px" 
-              borderColor="inherit" 
-              bg={headerBg}
+              flex="1"
+              display="flex"
+              flexDirection="column"
+              overflow="hidden"
             >
-              <Heading size="md">Chat with your document</Heading>
-              <Text fontSize="sm" mt={1} color={useColorModeValue('gray.600', 'gray.400')}>
-                Ask questions about your insurance policy
-              </Text>
+              <ChatInterface
+                documentContext={completeContext}
+                isOpen={true}
+                messages={chatMessages}
+                onMessagesChange={setChatMessages}
+              />
             </Box>
-            <Box p={0} h="calc(100% - 80px)">
-          <ChatInterface
-            documentContext={completeContext}
-            isOpen={true}
-          />
-            </Box>
-        </Box>
-      )}
+          </DrawerBody>
+        </DrawerContent>
+      </Drawer>
     </Flex>
     </Box>
   );

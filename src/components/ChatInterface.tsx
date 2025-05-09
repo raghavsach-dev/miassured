@@ -34,6 +34,8 @@ interface Message {
 interface ChatInterfaceProps {
   documentContext: any;
   isOpen: boolean;
+  messages: Message[];
+  onMessagesChange: (messages: Message[]) => void;
 }
 
 // Custom renderer components for Markdown with color-aware styling
@@ -77,8 +79,12 @@ const MarkdownComponents = {
   ),
 };
 
-export const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentContext, isOpen }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+export const ChatInterface: React.FC<ChatInterfaceProps> = ({ 
+  documentContext, 
+  isOpen, 
+  messages, 
+  onMessagesChange 
+}) => {
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -101,14 +107,14 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentContext, i
 
   // Add welcome message when chat opens
   useEffect(() => {
-    if (isOpen && messages.length === 0 && documentContext) {
-      setMessages([{
+    if (messages.length === 0 && documentContext) {
+      onMessagesChange([{
         role: 'assistant',
         content: "### Welcome to Policy Assistant! 👋\n\nI've analyzed your insurance policy and I'm ready to help you understand it better. You can ask me anything about:\n\n- Policy coverage and benefits\n- Exclusions and limitations\n- Waiting periods\n- Premium details\n- Claims procedures\n\nI'll provide clear, structured answers based on your policy document.",
         timestamp: new Date()
       }]);
     }
-  }, [isOpen, documentContext]);
+  }, [documentContext, messages.length, onMessagesChange]);
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -119,7 +125,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentContext, i
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    onMessagesChange([...messages, userMessage]);
     setInputMessage('');
     setIsLoading(true);
 
@@ -132,7 +138,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentContext, i
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, assistantMessage]);
+      onMessagesChange([...messages, userMessage, assistantMessage]);
     } catch (error) {
       toast({
         title: 'Error',
@@ -153,18 +159,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ documentContext, i
     }
   };
 
-  if (!isOpen) return null;
-
   return (
     <VStack h="100vh" spacing={0}>
-      <Box
-        p={4}
-        bg="blue.600"
-        color="white"
-        width="100%"
-      >
-        <Text fontWeight="bold">Chat with Your Document</Text>
-      </Box>
+
       
       <VStack
         flex={1}
