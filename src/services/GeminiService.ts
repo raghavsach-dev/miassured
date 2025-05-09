@@ -40,6 +40,7 @@ export class GeminiService {
   private promptLoadingPromise: Promise<void>;
   private conversationHistory: ChatMessage[] = [];
   private promptResponses: PromptResponse[] = [];
+  private documentContext: any = null;
 
   constructor() {
     this.model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -592,42 +593,116 @@ Please ensure your response:
     }
   }
 
+  setDocumentContext(context: any) {
+    this.documentContext = context;
+    // Initialize a new chat session with the context
+    this.chat = this.model.startChat({
+      history: [{
+        role: 'user',
+        parts: [{ text: `Here is the analyzed insurance policy document context that you should use to answer questions:
+${JSON.stringify(context, null, 2)}
+
+Instructions for answering questions:
+1. ALWAYS provide responses in clear, natural language text format
+2. Use proper Markdown formatting for better readability:
+   - Use **bold** for important terms and key points
+   - Use bullet points or numbered lists for multiple items
+   - Use ### for section headings
+   - Use > for important quotes or notes
+   - Use \`code\` formatting for specific policy values or limits
+   - Use --- for separating different sections
+3. Structure your responses for clarity:
+   - Start with a direct answer
+   - Follow with relevant details
+   - End with any important notes or caveats
+4. When citing policy details:
+   - Bold the section name: **Section: Policy Benefits**
+   - Use bullet points for listing features
+   - Use \`code\` for specific amounts or limits
+5. Keep responses concise but informative
+6. If information isn't available, clearly state that
+7. Use conversational, easy-to-understand language
+
+Please confirm you understand these formatting instructions by responding with a brief acknowledgment.` }]
+      }],
+      generationConfig: {
+        maxOutputTokens: 8192,
+      },
+    });
+
+    // Get initial confirmation from the AI
+    this.retryableGeminiOperation(async () => {
+      const response = await this.chat!.sendMessage("Please confirm you're ready to help with questions about the insurance policy, using proper formatting.");
+      return response.response.text();
+    });
+  }
+
   async followUpQuestion(question: string): Promise<AnalysisResult> {
     try {
-      if (!this.chat) {
-        throw new Error("Chat session not initialized");
+      if (!this.documentContext) {
+        return {
+          content: "I don't have access to the analyzed document context. Please provide the document analysis results first."
+        };
       }
 
-      // Add user question to history
-      this.conversationHistory.push({
-        role: 'user',
-        content: question,
-        timestamp: new Date()
+      if (!this.chat) {
+        this.chat = this.model.startChat({
+          history: [{
+            role: 'user',
+            parts: [{ text: `Here is the analyzed insurance policy document context that you should use to answer questions:
+${JSON.stringify(this.documentContext, null, 2)}
+
+Instructions for answering questions:
+1. ALWAYS provide responses in clear, natural language text format
+2. Use proper Markdown formatting for better readability:
+   - Use **bold** for important terms and key points
+   - Use bullet points or numbered lists for multiple items
+   - Use ### for section headings
+   - Use > for important quotes or notes
+   - Use \`code\` formatting for specific policy values or limits
+   - Use --- for separating different sections
+3. Structure your responses for clarity:
+   - Start with a direct answer
+   - Follow with relevant details
+   - End with any important notes or caveats
+4. When citing policy details:
+   - Bold the section name: **Section: Policy Benefits**
+   - Use bullet points for listing features
+   - Use \`code\` for specific amounts or limits
+5. Keep responses concise but informative
+6. If information isn't available, clearly state that
+7. Use conversational, easy-to-understand language` }]
+          }],
+          generationConfig: {
+            maxOutputTokens: 8192,
+          },
+        });
+      }
+
+      // Format the question with context reminder
+      const formattedQuestion = `Please answer the following question about the insurance policy:
+${question}
+
+Remember to use proper Markdown formatting:
+- **Bold** for important terms
+- Bullet points for lists
+- ### for headings
+- > for important notes
+- \`code\` for specific values
+- Clear structure and organization`;
+
+      const result = await this.retryableGeminiOperation(async () => {
+        const response = await this.chat!.sendMessage(formattedQuestion);
+        const text = await response.response.text();
+        return text;
       });
 
-      const result = await this.chat.sendMessage(question);
-      const response = await result.response;
-      const responseText = response.text();
-
-      // Add assistant response to history
-      this.conversationHistory.push({
-        role: 'assistant',
-        content: responseText,
-        timestamp: new Date()
-      });
-
-      return { content: responseText };
+      return {
+        content: result
+      };
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred processing your question';
-      
-      // Add error response to history
-      this.conversationHistory.push({
-        role: 'assistant',
-        content: errorMessage,
-        timestamp: new Date()
-      });
-
-      return { content: JSON.stringify({ error: errorMessage }, null, 2) };
+      console.error('Error in followUpQuestion:', error);
+      throw error;
     }
   }
 

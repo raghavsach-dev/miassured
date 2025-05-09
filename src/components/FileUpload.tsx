@@ -5,14 +5,12 @@ import {
   VStack,
   Text,
   useToast,
-  Progress,
   Card,
   CardBody,
   Icon,
   useColorModeValue,
   HStack,
   IconButton,
-  Divider,
   Alert,
   AlertIcon,
   AlertTitle,
@@ -25,11 +23,18 @@ import { FiUpload, FiTrash2, FiSearch, FiDatabase } from 'react-icons/fi';
 import { geminiService, AnalysisResult } from '../services/GeminiService';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import AnalysisInProgress from './AnalysisInProgress';
+
+const MotionBox = motion(Box);
 
 interface UploadedFile {
   file: File;
   id: string;
 }
+
+// Analysis status phases
+type AnalysisPhase = 'initial' | 'understanding' | 'extracting' | 'analyzing' | 'finalizing';
 
 export const FileUpload = () => {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -39,9 +44,13 @@ export const FileUpload = () => {
   const [error, setError] = useState<string | null>(null);
   const [promptsProcessed, setPromptsProcessed] = useState(0);
   const [testResult, setTestResult] = useState<string | null>(null);
+  const [analysisPhase, setAnalysisPhase] = useState<AnalysisPhase>('initial');
   const toast = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Total number of prompts to process
+  const TOTAL_PROMPTS = 13;
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
@@ -94,6 +103,25 @@ export const FileUpload = () => {
   const updatePromptProgress = () => {
     const processedPrompts = geminiService.getPromptResponses().length;
     setPromptsProcessed(processedPrompts);
+    
+    // Update analysis phase based on progress
+    if (processedPrompts === 0) {
+      setAnalysisPhase('initial');
+    } else if (processedPrompts < 3) {
+      setAnalysisPhase('understanding');
+    } else if (processedPrompts < 7) {
+      setAnalysisPhase('extracting');
+    } else if (processedPrompts < 11) {
+      setAnalysisPhase('analyzing');
+    } else {
+      setAnalysisPhase('finalizing');
+    }
+  };
+
+  // Calculate progress percentage
+  const getProgressPercentage = () => {
+    if (promptsProcessed === 0) return 5; // Show minimal progress at start
+    return Math.round((promptsProcessed / TOTAL_PROMPTS) * 100);
   };
 
   // Test Firebase storage without using Gemini
@@ -114,7 +142,7 @@ export const FileUpload = () => {
     setError(null);
 
     try {
-      const result = await geminiService.testFirebaseStorage(user.email);
+      const result = await geminiService.testFirestoreConnection(user.email);
       
       if (result.success) {
         setTestResult(`SUCCESS: ${result.message}`);
@@ -180,6 +208,7 @@ export const FileUpload = () => {
     setError(null);
     setPromptsProcessed(0);
     setTestResult(null);
+    setAnalysisPhase('initial');
 
     // Setup progress tracking interval
     const progressInterval = setInterval(() => {
@@ -189,7 +218,7 @@ export const FileUpload = () => {
     try {
       toast({
         title: 'Analysis Started',
-        description: `Analyzing ${uploadedFiles.length} document(s) together...`,
+        description: `Analyzing your insurance documents...`,
         status: 'info',
         duration: 3000,
         isClosable: true,
@@ -203,10 +232,6 @@ export const FileUpload = () => {
       // Clear interval and update one last time
       clearInterval(progressInterval);
       updatePromptProgress();
-      
-      // Debug logs
-      console.log("Analysis Result:", result);
-      console.log("Prompt Responses:", geminiService.getPromptResponses());
       
       setAnalysisResult(result);
 
@@ -243,6 +268,18 @@ export const FileUpload = () => {
   const cardBg = useColorModeValue('gray.50', 'gray.700');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
 
+  // Render different UI based on analysis state
+  if (isAnalyzing) {
+    return (
+      <AnalysisInProgress 
+        progress={getProgressPercentage()}
+        phase={analysisPhase}
+        promptsProcessed={promptsProcessed}
+        totalPrompts={TOTAL_PROMPTS}
+      />
+    );
+  }
+
   return (
     <VStack spacing={6} w="full">
       {error && (
@@ -277,28 +314,17 @@ export const FileUpload = () => {
         </Alert>
       )}
       
-      <HStack w="full" justifyContent="flex-end">
-        <Tooltip label="Test Firebase storage without using Gemini">
-          <Button
-            leftIcon={<Icon as={FiDatabase} />}
-            colorScheme="teal"
-            size="sm"
-            onClick={testFirebaseStorage}
-            isLoading={isTesting}
-            loadingText="Testing..."
-          >
-            Test Firebase Storage
-          </Button>
-        </Tooltip>
-      </HStack>
       
-      <Box
+      <MotionBox
         w="full"
         p={10}
         border="2px dashed"
         borderColor={borderColor}
         borderRadius="lg"
         textAlign="center"
+        initial={{ y: 10, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.4 }}
       >
         <Button
           as="label"
@@ -320,90 +346,56 @@ export const FileUpload = () => {
         <Text color="gray.500" fontSize="sm">
           Select all PDF documents related to the insurance policy
         </Text>
-      </Box>
+      </MotionBox>
 
       {uploadedFiles.length > 0 && (
-        <VStack w="full" spacing={4}>
-          <Text fontWeight="bold" fontSize="lg">
-            Policy Documents ({uploadedFiles.length})
-          </Text>
-          {uploadedFiles.map(({ file, id }) => (
-            <Card key={id} w="full" bg={cardBg}>
-              <CardBody>
-                <HStack justify="space-between">
-                  <Text>{file.name}</Text>
-                  <IconButton
-                    icon={<FiTrash2 />}
-                    aria-label="Remove file"
-                    variant="ghost"
-                    colorScheme="red"
-                    onClick={() => removeFile(id)}
-                  />
-                </HStack>
-              </CardBody>
-            </Card>
-          ))}
-          
-          <Button
-            leftIcon={<Icon as={FiSearch} />}
-            colorScheme="green"
-            size="lg"
-            w="full"
-            onClick={analyzeFiles}
-            isLoading={isAnalyzing}
-            loadingText={promptsProcessed > 0 ? `Analyzing... (${promptsProcessed} prompts processed)` : "Analyzing Policy Documents..."}
-          >
-            Analyze Policy
-          </Button>
-        </VStack>
-      )}
-
-      {isAnalyzing && (
-        <Box w="full">
-          <HStack mb={2} justify="center">
-            <Text textAlign="center">
-              {promptsProcessed === 0 
-                ? "Analyzing documents with parent prompt..." 
-                : `Processing specialized prompts: ${promptsProcessed} complete`}
-            </Text>
-            {promptsProcessed > 0 && (
-              <Badge colorScheme="green" fontSize="0.8em" borderRadius="full" px="2">
-                {promptsProcessed}
-              </Badge>
-            )}
-          </HStack>
-          <Progress size="xs" isIndeterminate={promptsProcessed === 0} value={promptsProcessed} max={13} colorScheme="blue" />
-        </Box>
-      )}
-
-      {analysisResult && !error && (
-        <VStack w="full" spacing={4}>
-          <Divider />
-          <HStack justify="space-between" w="full">
-            <Text fontWeight="bold" fontSize="lg">
-              Policy Analysis Result
-            </Text>
-            <Badge colorScheme="blue" p={2} borderRadius="md">
-              {promptsProcessed} prompts processed
-            </Badge>
-          </HStack>
-          <Card w="full" bg={cardBg}>
-            <CardBody>
-              <Text whiteSpace="pre-wrap" fontFamily="monospace">
-                {(() => {
-                  try {
-                    // Try to parse and pretty print if it's JSON
-                    const parsed = JSON.parse(analysisResult.content);
-                    return JSON.stringify(parsed, null, 2);
-                  } catch {
-                    // If not JSON, display as is
-                    return analysisResult.content || '';
-                  }
-                })()}
+        <MotionBox
+          w="full"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          <VStack w="full" spacing={4}>
+            <HStack w="full" justify="space-between">
+              <Text fontWeight="bold" fontSize="lg">
+                Policy Documents ({uploadedFiles.length})
               </Text>
-            </CardBody>
-          </Card>
-        </VStack>
+              <Badge colorScheme="blue" p={1} borderRadius="md">
+                {uploadedFiles.length} file{uploadedFiles.length > 1 ? 's' : ''} ready
+              </Badge>
+            </HStack>
+            
+            {uploadedFiles.map(({ file, id }) => (
+              <Card key={id} w="full" bg={cardBg}>
+                <CardBody>
+                  <HStack justify="space-between">
+                    <Text>{file.name}</Text>
+                    <IconButton
+                      icon={<FiTrash2 />}
+                      aria-label="Remove file"
+                      variant="ghost"
+                      colorScheme="red"
+                      onClick={() => removeFile(id)}
+                    />
+                  </HStack>
+                </CardBody>
+              </Card>
+            ))}
+            
+            <Button
+              leftIcon={<Icon as={FiSearch} />}
+              colorScheme="green"
+              size="lg"
+              w="full"
+              onClick={analyzeFiles}
+              isLoading={isAnalyzing}
+              loadingText="Preparing Analysis..."
+              mt={2}
+            >
+              Analyze Insurance Policy
+            </Button>
+          </VStack>
+        </MotionBox>
       )}
     </VStack>
   );
