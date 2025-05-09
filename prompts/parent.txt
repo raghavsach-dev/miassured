@@ -31,7 +31,11 @@ When you have completed reading and processing the document, respond ONLY with t
     "name": "string",
     "type": "string",
     "provider": "string",
-    "category": "string"
+    "category": "string",
+    "policyNumber": "string",
+    "issuedDate": "string",
+    "validUntil": "string",
+    "version": "string"
   },
   "keyFeatures": [
     "string"
@@ -49,7 +53,12 @@ When you have completed reading and processing the document, respond ONLY with t
   },
   "sumInsuredOptions": [
     "string"
-  ]
+  ],
+  "customerService": {
+    "contactPhone": "string",
+    "contactEmail": "string", 
+    "website": "string"
+  }
 }
 
 Fill all fields with information from the document. If a field is not applicable or information is not found, use empty strings for text fields and empty arrays [] for lists. For object values, maintain the structure but use empty strings for their properties. 
